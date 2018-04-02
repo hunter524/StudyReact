@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
+    <script src="../build/browser.min.js"></script>
+
+  </head>
+  <body>
+    <div id="example"></div>
+    <div id="example2"></div>
+    <div id="example3"></div>
+    <div id="example4"></div>
+    <div id="example5"></div>
+
+    <!--使用babel需要重新编译的代码-->
+    <script type="text/babel">
+        ReactDOM.render(
+            <h1>Hello, world!</h1>,
+            document.getElementById('example')
+        );
+
+        setTimeout(() => {
+            ReactDOM.render(
+                <h2> second Hello!</h2>,
+                document.getElementById('example2'))
+        }, 3000);
+
+        var BarWidget = React.createClass({
+            render:function () {
+                return <div>Hello {this.props.name}</div>;
+            }
+        });
+        //为什么需要用ReactDom 进行渲染？
+        ReactDOM.render(<BarWidget name="Foo"/>,document.getElementById('example3'),function () {
+            alert("complete display Foo")
+        });
+
+        //自定义的组件需要怎么使用
+        class BarWigetExtends extends React.Component{
+            //返回的其实是ReactElement
+            render(){
+                var element = (
+                    <div className="shopList">
+                        <h1>Shop List for {this.props.name}</h1>
+                        <ul>
+                            <li>Bar Item 1</li>
+                            <li>Foo Item 2</li>
+                            <li>End Item :{this.props.endItem}</li>
+                        </ul>
+                    </div>
+                );
+                //ReactElement不是一个全局变量 因此获取不到
+                console.log('element is:',typeof element/*,element instanceof ReactElement*/);
+                return element;
+            }
+        }
+
+        ReactDOM.render(<BarWigetExtends name="Amazon"/>, document.getElementById('example4'));
+        //通过React直接创建 Element元素 第三个元素children 为内置元素
+        ReactDOM.render(React.createElement("h3", null,"H3"), document.getElementById('example5'));
+
+    </script>
+  </body>
+</html>
