@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import './otherComponent.js'
-import {Greeting,MixInComponent}from './es5React.js'
+import {Greeting, MixInComponent} from './es5React.js'
 import './flowTest'
 import PropTypes from "prop-types"
 import {ExternalCompositeComponent, DefaultComponent} from "./otherComponent";
@@ -832,13 +832,14 @@ class DefaultProps extends React.Component {
     }
 
 }
+
 //ES6 给组件定义默认属性
-DefaultProps.defaultProps={
-    name:"ES6 Default Name!"
+DefaultProps.defaultProps = {
+    name: "ES6 Default Name!"
 };
 
 
-
+//
 class UpdateComponent extends React.Component {
     constructor(props) {
         super(props);
@@ -867,6 +868,287 @@ class UpdateComponent extends React.Component {
 
 }
 
+class ComponentLifeCycle extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    componentWillMount() {
+        console.log(`ComponentLifeCycle componentWillMount ${this.props.name}`)
+    }
+
+    componentDidMount() {
+        console.log(`ComponentLifeCycle componentDidMount ${this.props.name}`)
+    }
+
+    //如果Component的Type相同只是属性不同 则先调用该方法，然后调用ComponentWillUpdate方法
+
+    componentWillUnmount() {
+        console.log(`ComponentLifeCycle componentWillUnmount ${this.props.name}`)
+
+    }
+
+    componentWillReceiveProps() {
+        console.log(`ComponentLifeCycle componentWillReceiveProps ${this.props.name}`)
+    }
+
+    componentWillUpdate() {
+        console.log(`ComponentLifeCycle componentWillUpdate ${this.props.name}`)
+    }
+
+
+    render() {
+        return (<div>
+            <a>
+                I am a ComponentLifeCycle named {this.props.name}
+            </a>
+        </div>);
+    }
+}
+
+class ComponentLifeCycleSecond extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    componentWillMount() {
+        console.log(`ComponentLifeCycleSecond componentWillMount ${this.props.name}`)
+    }
+
+    componentDidMount() {
+        console.log(`ComponentLifeCycleSecond componentDidMount ${this.props.name}`)
+    }
+
+    componentWillUnmount() {
+        console.log(`ComponentLifeCycleSecond componentWillUnmount ${this.props.name}`)
+
+    }
+
+    render() {
+        return (<div>
+            <a>
+                I am a ComponentLifeCycleSecond named {this.props.name}
+            </a>
+        </div>);
+    }
+}
+
+//according to Advanced Guide Reconciliation
+// Component的更新首先判断 root 元素的 type是否相同，如果相同则更新Component属性，
+// 如果不相同则替换该root 下面的所有子元素（移除原先的Component 添加新的Component）
+class ParentLifeCycleComponent extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {times: 0}
+    }
+
+    componentDidMount() {
+        this.timerId = setInterval(() => {
+            this.setState((preState) => {
+                return {times: preState.times + 1}
+            })
+        }, 1000)
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timerId);
+    }
+
+    render() {
+        if (this.state.times % 3 === 0) {
+            return <ComponentLifeCycle name="3% = 0"/>
+        }
+        else if (this.state.times % 3 === 1) {
+            return <ComponentLifeCycle name="3% = 1"/>
+        }
+        else if (this.state.times % 3 === 2) {
+            return <ComponentLifeCycleSecond name="3% = 2"/>
+        }
+        else {
+            return null;
+        }
+    }
+}
+
+
+//React Context Test
+const ThemContext = React.createContext("light");
+const UserContext = React.createContext("hunter")
+
+class InnerThemComponent extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    // 将Context在生命周期函数中使用 只能使用props传入属性才可以进行访问
+    // componentDidMount(){
+    //     let {them,children} = this.props;
+    //     console.log("them is:",this.props.them)
+    // }
+
+    render() {
+        return (
+            <ThemContext.Consumer>
+                {(them) => {
+                    return <a>{them}</a>
+                }}
+            </ThemContext.Consumer>);
+    }
+
+}
+
+class OuterThemComponent extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+
+    render() {
+        return (
+            <div>
+                <InnerThemComponent/>
+            </div>
+        )
+    }
+
+}
+
+class MultiplyComponent extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return (
+            <div>
+                <ThemContext.Provider value="color blue">
+                    <UserContext.Provider value="admin hunter">
+                        <ThemContext.Consumer>
+                            {(them) => (
+                                <UserContext.Consumer>
+                                    {(user) => (
+                                        <a>I am {user} my skin is {them} </a>
+                                    )}
+                                </UserContext.Consumer>
+                            )
+                            }
+                        </ThemContext.Consumer>
+
+
+                    </UserContext.Provider>
+                </ThemContext.Provider>
+            </div>
+        );
+    }
+
+}
+//HOC High Order Component 可以解决所有子组件共享Context的问题
+//实现策略是将 Context取出 作为props的参数传递进入组件（类似于高阶函数，高阶函数可以调用低阶函数）
+
+//todo:forward refs Context如何理解？ consumer 包装一层再把FancyButton进行导出
+// class FancyButton extends React.Component{
+//     constructor(props){
+//         super(props);
+//     }
+//
+//     render(){
+//         return(<a>Theme is {this.props.theme}</a>);
+//     }
+// }
+//
+//
+// React.forwardRef((props,ref)=>(
+//     <ThemContext.Consumer>
+//         {them=>(<FancyButtom {...props} theme={them} ref={ref}/>)}
+//     </ThemContext.Consumer>
+// ));
+
+
+//react 中的Fragment
+function TdList(props) {
+    // return (
+    //     <td>1</td>
+    //     <td></td>
+    // );
+
+    return (
+        <React.Fragment>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+        </React.Fragment>
+    );
+}
+
+//第一个只有三列 第二行一个div则为1列
+function FragmentComponet(props) {
+    return(
+        <table>
+            <tr>
+                <TdList/>
+            </tr>
+            <tr>
+                <div>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                </div>
+                <td>
+                    <div>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    );
+}
+
+//ReactDom 中的portal组件 用于控制与组合组件
+
+//React Component 的 Error Boundaries
+class ErrorBoundaryComponent extends React.Component{
+    constructor(props){
+        super(props);
+        this.state={hasError:false}
+    }
+
+    shouldComponentUpdate(nextProps,nextStates){
+        if (nextStates.hasError) {
+            throw new TypeError("error boundary!");
+        }
+    }
+
+    render(){
+        if (this.state.hasError) {
+            return <a>Some Thing Wrong!</a>
+        }
+        else {
+            return <button onClick={()=>{this.setState({hasError:true})}}>throw error!</button>
+        }
+    }
+
+
+}
+
+//ErrorBoundary只能捕获其子元素的错误 并不能捕获当前Component产生的错误
+//且子元素的Error 只向上传递到理其最近的一个Component 的 componentDidCatch方法
+//再向上的component 则无法接收到异常
+class CatchComponent extends React.Component{
+    constructor(props){
+        super(props);
+    }
+
+    render(){
+        return (<ErrorBoundaryComponent/>);
+
+    }
+
+    componentDidCatch(error,info){
+        alert(error);
+        alert(info.componentStack);
+    }
+}
 
 //页面元素组合
 class AppComposite extends React.Component {
@@ -931,7 +1213,23 @@ class AppComposite extends React.Component {
             {/*<DefaultProps name = "Not Default Name!"/>*/}
 
             {/*使用mixin属性实现计时操作*/}
-            <MixInComponent/>
+            {/*<MixInComponent/>*/}
+
+            {/*使用Context参数 透过Component 进行参数的传递*/}
+            <ThemContext.Provider value="blue">
+                <OuterThemComponent/>
+            </ThemContext.Provider>
+
+            {/*没有匹配到Provider 则使用默认的值*/}
+            <OuterThemComponent/>
+            {/*parent Component 声明周期 比较算法测试*/}
+            {/*<ParentLifeCycleComponent/>*/}
+
+            <MultiplyComponent/>
+
+            <FragmentComponet/>
+
+            <CatchComponent/>
         </div>);
     }
 
