@@ -1150,10 +1150,54 @@ class CatchComponent extends React.Component{
     }
 }
 
+//High Order Component （类似于函数式编程中的高阶函数）
+//函数式编程中：传入低阶函数 被 高阶函数调用
+//React中传入低阶Component被高阶Component进行包装调用
+//可以通过修改DisplayName 修改在Chrome React Debug工具中显示的组件名称
+//如果不修改DisplayName则默认显示的 返回的class的名称 （即使包装的低阶的组件不同，Chrome中显示的高阶的组件的名称还是相同的）
+//copy 低阶组件的静态方法 进入高阶组件中是很有必要的，但是需要明确的知道组件的名称 copy所有组件的静态方法可以使用 “hoist-non-react-statics”module进行
+//todo://High Order Component 组件是否便可以解决面向切面编程的问题？
+function wrapLowComponent(LowComponent,name) {
+     class HOCComponent extends React.Component{
+        constructor(props){
+            super(props)
+        }
+
+        render(){
+            return <LowComponent name={name}/>
+        }
+
+    }
+    // HOCComponent.displayName = `HOCWrapped${LowComponent.displayName||LowComponent.name||'Component'}`;
+    return HOCComponent;
+}
+
+function LowComponent(props) {
+    return(
+        <button onClick={function () {
+            LowComponent.staticMethod("button");
+        }}>I am Low Component!Name is {props.name}</button>
+    );
+}
+LowComponent.staticMethod = function (message) {
+    alert("hello:"+message);
+};
+
+const HighComponent = wrapLowComponent(LowComponent,"low low low！");
+const HighComponentSecond = wrapLowComponent(LowComponent,"low second ,low second ,low second!");
+
+//Forwarding refs(向Component中的Component组件索取引用）
+//HOC 的Component ref默认不向下传递 需要通过React.forwardRef 将ref作为props的一个参数向下传递
+const ForwardRefButton = React.forwardRef((props,ref) =>{
+    return <button ref={ref}>Click</button>
+});
+
+
+const ref = React.createRef();
 //页面元素组合
 class AppComposite extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
     }
 
     render() {
@@ -1230,6 +1274,15 @@ class AppComposite extends React.Component {
             <FragmentComponet/>
 
             <CatchComponent/>
+
+            {/*包装低阶的Component形成一个更高级别的抽象，从而提供给外部进行使用 更高级的Component封装一些更加通用与抽象的逻辑*/}
+            <HighComponent/>
+            <HighComponentSecond/>
+
+            {/*通过ref获取到 ForwardButton底层Button的引用 点击可以通过forward ref修改ref的引用*/}
+            <ForwardRefButton ref={ref}/>
+            <button onClick={()=>{ref.current.innerHTML="Changed"}}>call Ref Method!</button>
+
         </div>);
     }
 
