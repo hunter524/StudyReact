@@ -7,6 +7,8 @@ import './flowTest'
 import PropTypes from "prop-types"
 import {ExternalCompositeComponent, DefaultComponent} from "./otherComponent";
 import {add} from "./flowTest"
+
+
 //普通类型定义的组件
 // class Square extends React.Component {
 //     render() {
@@ -979,6 +981,7 @@ class InnerThemComponent extends React.Component {
     constructor(props) {
         super(props);
     }
+
     // 将Context在生命周期函数中使用 只能使用props传入属性才可以进行访问
     // componentDidMount(){
     //     let {them,children} = this.props;
@@ -1041,6 +1044,7 @@ class MultiplyComponent extends React.Component {
     }
 
 }
+
 //HOC High Order Component 可以解决所有子组件共享Context的问题
 //实现策略是将 Context取出 作为props的参数传递进入组件（类似于高阶函数，高阶函数可以调用低阶函数）
 
@@ -1081,7 +1085,7 @@ function TdList(props) {
 
 //第一个只有三列 第二行一个div则为1列
 function FragmentComponet(props) {
-    return(
+    return (
         <table>
             <tr>
                 <TdList/>
@@ -1107,24 +1111,26 @@ function FragmentComponet(props) {
 //ReactDom 中的portal组件 用于控制与组合组件
 
 //React Component 的 Error Boundaries
-class ErrorBoundaryComponent extends React.Component{
-    constructor(props){
+class ErrorBoundaryComponent extends React.Component {
+    constructor(props) {
         super(props);
-        this.state={hasError:false}
+        this.state = {hasError: false}
     }
 
-    shouldComponentUpdate(nextProps,nextStates){
+    shouldComponentUpdate(nextProps, nextStates) {
         if (nextStates.hasError) {
             throw new TypeError("error boundary!");
         }
     }
 
-    render(){
+    render() {
         if (this.state.hasError) {
             return <a>Some Thing Wrong!</a>
         }
         else {
-            return <button onClick={()=>{this.setState({hasError:true})}}>throw error!</button>
+            return <button onClick={() => {
+                this.setState({hasError: true})
+            }}>throw error!</button>
         }
     }
 
@@ -1134,17 +1140,17 @@ class ErrorBoundaryComponent extends React.Component{
 //ErrorBoundary只能捕获其子元素的错误 并不能捕获当前Component产生的错误
 //且子元素的Error 只向上传递到理其最近的一个Component 的 componentDidCatch方法
 //再向上的component 则无法接收到异常
-class CatchComponent extends React.Component{
-    constructor(props){
+class CatchComponent extends React.Component {
+    constructor(props) {
         super(props);
     }
 
-    render(){
+    render() {
         return (<ErrorBoundaryComponent/>);
 
     }
 
-    componentDidCatch(error,info){
+    componentDidCatch(error, info) {
         alert(error);
         alert(info.componentStack);
     }
@@ -1157,43 +1163,97 @@ class CatchComponent extends React.Component{
 //如果不修改DisplayName则默认显示的 返回的class的名称 （即使包装的低阶的组件不同，Chrome中显示的高阶的组件的名称还是相同的）
 //copy 低阶组件的静态方法 进入高阶组件中是很有必要的，但是需要明确的知道组件的名称 copy所有组件的静态方法可以使用 “hoist-non-react-statics”module进行
 //todo://High Order Component 组件是否便可以解决面向切面编程的问题？
-function wrapLowComponent(LowComponent,name) {
-     class HOCComponent extends React.Component{
-        constructor(props){
+function wrapLowComponent(LowComponent, name) {
+    class HOCComponent extends React.Component {
+        constructor(props) {
             super(props)
         }
 
-        render(){
+        render() {
             return <LowComponent name={name}/>
         }
 
     }
+
     // HOCComponent.displayName = `HOCWrapped${LowComponent.displayName||LowComponent.name||'Component'}`;
     return HOCComponent;
 }
 
 function LowComponent(props) {
-    return(
+    return (
         <button onClick={function () {
             LowComponent.staticMethod("button");
         }}>I am Low Component!Name is {props.name}</button>
     );
 }
+
+//定义在类上的方法 而不是定义在类的内部的方法
+//定义在类的{}内部的方法为对象的方法
+//定义在类的引用上的方法 为类的方法
 LowComponent.staticMethod = function (message) {
-    alert("hello:"+message);
+    alert("hello:" + message);
 };
 
-const HighComponent = wrapLowComponent(LowComponent,"low low low！");
-const HighComponentSecond = wrapLowComponent(LowComponent,"low second ,low second ,low second!");
+const HighComponent = wrapLowComponent(LowComponent, "low low low！");
+const HighComponentSecond = wrapLowComponent(LowComponent, "low second ,low second ,low second!");
 
 //Forwarding refs(向Component中的Component组件索取引用）
 //HOC 的Component ref默认不向下传递 需要通过React.forwardRef 将ref作为props的一个参数向下传递
-const ForwardRefButton = React.forwardRef((props,ref) =>{
+const ForwardRefButton = React.forwardRef((props, ref) => {
     return <button ref={ref}>Click</button>
 });
 
 
 const ref = React.createRef();
+
+//Render Props （渲染属性）i.e (属性中存在一个渲染函数，负责组件的其他部分的渲染。可以取名叫render方法也可以不叫render 实际即是一个渲染方法的指针）
+//也可以使用High Order Component （HOC）实现一个组件内置于另外一个组件的渲染（将低阶组件内置于高阶组件内返回）
+//todo:React.Component 与React.PureComponent 的区别 （普通的Component每次都返回true？PureComponent 的 shouldComponentUpdate会进行浅比较然后判断是否该更新数据
+class MouseMove extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            x: 0,
+            y: 0,
+        };
+        this.handleMouseMove = this.handleMouseMove.bind(this)
+    }
+
+    shouldComponentUpdate() {
+        // var b =super.shouldComponentUpdate();
+        // console.log("shouldComponentUpdate"+b);
+        return true;
+    }
+
+    handleMouseMove(event) {
+        //判断某个元素是否是ReactElement
+        // var valid = React.isValidElement(React.createElement("a",null,null));
+        // console.log(`valid ${valid}`);
+
+        var number = React.Children.count(this.props.children);
+        console.log(`children number is ${number}`);
+
+        this.setState({
+            x: event.clientX,
+            y: event.clientY,
+        })
+    }
+
+    render() {
+        return (
+            <div style={{height: '1000px', width: '100%'}} onMouseMove={this.handleMouseMove}>
+                <a>Current Position is {`x: ${this.state.x} y: ${this.state.y}`}</a>
+                {/*{this.props.render(this.state)}*/}
+                {/*内层的控件决定了其Children是否显示*/}
+                {this.props.children||<a>No Children</a>}
+            </div>
+        );
+    }
+
+
+}
+
+
 //页面元素组合
 class AppComposite extends React.Component {
     constructor(props) {
@@ -1260,28 +1320,36 @@ class AppComposite extends React.Component {
             {/*<MixInComponent/>*/}
 
             {/*使用Context参数 透过Component 进行参数的传递*/}
-            <ThemContext.Provider value="blue">
-                <OuterThemComponent/>
-            </ThemContext.Provider>
+            {/*<ThemContext.Provider value="blue">*/}
+            {/*<OuterThemComponent/>*/}
+            {/*</ThemContext.Provider>*/}
 
             {/*没有匹配到Provider 则使用默认的值*/}
-            <OuterThemComponent/>
+            {/*<OuterThemComponent/>*/}
             {/*parent Component 声明周期 比较算法测试*/}
             {/*<ParentLifeCycleComponent/>*/}
 
-            <MultiplyComponent/>
+            {/*<MultiplyComponent/>*/}
 
-            <FragmentComponet/>
+            {/*<FragmentComponet/>*/}
 
-            <CatchComponent/>
+            {/*<CatchComponent/>*/}
 
             {/*包装低阶的Component形成一个更高级别的抽象，从而提供给外部进行使用 更高级的Component封装一些更加通用与抽象的逻辑*/}
-            <HighComponent/>
-            <HighComponentSecond/>
+            {/*<HighComponent/>*/}
+            {/*<HighComponentSecond/>*/}
 
             {/*通过ref获取到 ForwardButton底层Button的引用 点击可以通过forward ref修改ref的引用*/}
-            <ForwardRefButton ref={ref}/>
-            <button onClick={()=>{ref.current.innerHTML="Changed"}}>call Ref Method!</button>
+            {/*<ForwardRefButton ref={ref}/>*/}
+            {/*<button onClick={()=>{ref.current.innerHTML="Changed"}}>call Ref Method!</button>*/}
+
+            {/*通过render props 设置鼠标的跟踪*/}
+            <MouseMove render={state => {
+                return <a style={{position: 'absolute', left: state.x, top: state.y}}>Cat</a>
+            }}>
+                {/*<a>I am a Children!Not Display</a>*/}
+                {/*<a>I am a Children!Display!</a>*/}
+            </MouseMove>
 
         </div>);
     }
