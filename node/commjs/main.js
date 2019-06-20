@@ -16,5 +16,3 @@ global.console.log("log from global.console.log!");
 
 // console.log("Global:",global);
 console.log("module:",module);
-
-amdefine()
