@@ -1,4 +1,5 @@
 //依赖路径等的相关配置
+console.time("cmd main");
 seajs.config({
     bath:"./",
     charset:'utf-8',
@@ -19,3 +20,4 @@ seajs.use('sub',function (sub) {
 });
 
 console.log("after call seajs use");
+console.timeEnd("cmd main");
