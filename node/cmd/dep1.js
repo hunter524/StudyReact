@@ -27,8 +27,6 @@ function syncGetModule(){
 // exports:需要导出的依赖
 // Module：所有module模块的定义
 define(function () {
-    let argLenth = arguments.length;
-    console.log(`arg 0 ${arguments[0]} arg 1 ${arguments[1] } arg 2 ${arguments[2] }`,arguments[1],arguments[2]);
-    console.log(`arg length ${argLenth}`);
+    console.log("call dep1 fun");
     return syncGetModule()
 });

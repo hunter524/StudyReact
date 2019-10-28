@@ -16,12 +16,12 @@ require.config({
 
 
 //本地加载的dep1 耗时通常在50ms以内
-// console.time("getDep1");
-// require(['dep1'],function (dep1) {
-//     console.log("from main call dep1#add:"+(dep1.add(3,4)));
-//     console.log("define:",define);
-//     console.timeEnd("getDep1")
-// });
+console.time("getDep1");
+require(['dep1'],function (dep1) {
+    console.log("from main call dep1#add:"+(dep1.add(3,4)));
+    console.log("define:",define);
+    console.timeEnd("getDep1")
+});
 
 //异步加载JQuery模块
 // require(["jquery"],function ($) {
@@ -44,13 +44,13 @@ require.config({
 // });
 
 //自行配置加载非AMD规范化的模块
-console.time("noAmdModule");
-require(['noAmdModule'],function (noAmdModule) {
-    console.timeEnd("noAmdModule");
-    noAmdModule.foo();
-    //检查加载非标准化的模块时 是否污染了全局变量
-    console.log(`global jquery ${$}`)
-});
+// console.time("noAmdModule");
+// require(['noAmdModule'],function (noAmdModule) {
+//     console.timeEnd("noAmdModule");
+//     noAmdModule.foo();
+//     //检查加载非标准化的模块时 是否污染了全局变量
+//     console.log(`global jquery ${$}`)
+// });
 
 //无论加载的模块是规范化的AMD模块还是非规范化的AMD模块均会污染全局变量
 // setTimeout(()=>{
@@ -58,7 +58,7 @@ require(['noAmdModule'],function (noAmdModule) {
 // },1000);
 
 //noAmdModule中定义的全局变量可以在模块main中获取从而污染全局变量
-setTimeout(()=>{
-    console.log("Global NoAmdModule:",NoAmdModule)
-},1000);
+// setTimeout(()=>{
+//     console.log("Global NoAmdModule:",NoAmdModule)
+// },1000);
 

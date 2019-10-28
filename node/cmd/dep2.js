@@ -26,9 +26,14 @@ function syncGetModule(){
 // require：定义的依赖的依赖
 // exports:需要导出的依赖
 // Module：自己Module模块的定义对象
-define(function () {
+define(['dep1'],function (require,exports,module) {
     // let argLenth = arguments.length;
     // console.log(`arg 0 ${arguments[0]} arg 1 ${arguments[1] } arg 2 ${arguments[2] }`,arguments[1],arguments[2]);
     // console.log(`arg length ${argLenth}`);
-    return syncGetModule()
+    // return syncGetModule()
+    // var dep1 = require('dep1');
+    console.log("call dep2 func");
+    var dep1 = require('dep1');
+
+    exports.sub =sub
 });

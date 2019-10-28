@@ -11,9 +11,9 @@ seajs.config({
 
 //使用依赖
 //依赖的导出定义需要 在dep1.js 或者 dep2.js中
-seajs.use('dep',function (dep) {
-    console.log("seajs use call module:",dep.add(1,2));
-});
+// seajs.use('dep',function (dep) {
+//     console.log("seajs use call module:",dep.add(1,2));
+// });
 
 seajs.use('sub',function (sub) {
     console.log('seajs use call sub',sub.sub(2,1))
