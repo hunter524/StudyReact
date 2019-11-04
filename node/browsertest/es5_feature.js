@@ -68,7 +68,6 @@ Father.prototype = new GrandFather();
 // });
 
 var child = new Child();
-
 var father = new Father();
 
 // console.log("child prototype",child.prototype,"child __proto__",child.__proto__,"child.__proto__proto__",child.__proto__.__proto__);
@@ -284,6 +283,75 @@ var addFun = new Function("x","y","return x + y;");
 
 var added = addFun(1,2);
 console.log("addFun added:",added);
+
+var aarray = [1,2,3,4,5];
+console.log("aarray keys:"+Object.keys(aarray)+"array values:"+aarray);
+
+aarray.length = 10;
+console.log("after set aarray length aarray keys:"+Object.keys(aarray)+"array values:"+aarray);
+console.log("aarray from 6-10:",aarray[5],aarray[6],aarray[7],aarray[8],aarray[9]);
+aarray["p"]="property";
+var aresult = "";
+for (i in aarray){
+    aresult = aresult+aarray[i];
+}
+
+console.log("for in result:"+aresult);
+
+aresult = "";
+delete aarray[2];
+console.log("after delete");
+aarray.forEach(function (value, index, array) {
+    aresult = aresult+"value:"+value+"index:"+index+"array:"+array+"\n"
+});
+console.log("forEach:"+aresult);
+console.log("Keys:",Object.keys(aarray));
+
+var arrayLike = {0:"000",1:"111",2:"222",3:"333",length:4};
+// arrayLike.push("444");
+Array.prototype.forEach.call(arrayLike,function (v, i, arr) {
+   console.log("arrayLikeForEach:",arrayLike);
+});
+
+var realArray = Array.prototype.slice.call(arrayLike);
+realArray.push("slice become real array");
+console.log("RealArray:",realArray);
+
+console.log("Array Like:",arrayLike);
+
+var opObjV = {
+    valueOf:function () {
+        return 1;
+    }
+};
+
+var opObjT = {
+    toString:function () {
+        return "toString";
+    },
+    valueOf:function () {
+        return 2;
+    }
+};
+
+
+console.log("valueOf:",1+opObjV);
+console.log("toString:",1+opObjT);
+
+console.log("2**3:",2**3);
+
+var opFunV = function () {
+  console.log("called opFunV")
+};
+
+opFunV.valueOf=function () {
+    return 2;
+};
+
+console.log("opFunV:",2+opFunV);
+
+
+
 
 
 
