@@ -350,8 +350,50 @@ opFunV.valueOf=function () {
 
 console.log("opFunV:",2+opFunV);
 
+// function UserError() {
+//
+// }
+//
+// UserError.prototype = new Error();
+
+//TODO:// 为什么抛出异常不运行catch代码块
+function throwErr() {
+    Array(-1);
+    throw new Error("throw Err");
+}
+
+function callThrow() {
+    try {
+        throwErr()
+        // throw "throw string";
+    }
+    catch (e) {
+        console.log("callThrow Catch:"+e.message+"\nstack:"+e.stack+"\n"+"e instanceof Error:"+e instanceof Error);
+        return "catch"
+    }
+    finally {
+        console.log("callThrow finally");
+        return "finally"
+    }
+    return "function out"
+}
+
+console.log("try catch finally return:"+callThrow());
 
 
+// setTimeout(function () {
+//     console.log("Next EventLoop 1")
+// });
+//
+// setTimeout(function () {
+//     console.log("Next EventLoop 2")
+// });
+//
+// console.log("start throw");
+//
+// // throwErr();
+// // eval("ddd ddd;")
+// console.log("after throw");
 
 
 

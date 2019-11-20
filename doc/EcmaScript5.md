@@ -264,8 +264,8 @@ function(){}() X 声明在行首会被解析成为语句，无法被即时调用
 
 ### 数组(Array)
 
-数组是一种特殊类型的对象，数组的长度可以通过设置length进行扩大和缩小，当扩大到大于当前数组长度时，多余的空位则均为undefined，当缩小到小于当前大小时，
-多余的元素会被移除。
+数组是一种特殊类型的对象，数组的长度可以通过设置length进行扩大和缩小，当扩大到大于当前数组长度时，多余的则为空位(空位与undefined不同，undefined在
+数组遍历时不会跳过，空位在数组遍历时则会跳过，但是通过索引去获取空位的元素时则会返回undefined)，，当缩小到小于当前大小时，多余的元素会被移除。
 数组的大小最大(2^32)-1 ，大于该值或者小于0的key也可以被添加进入数组，但是只是作为普通对象的属性，添加进入数组，因此数组的遍历不推荐使用 for in 进行
 遍历，除非该数组为纯数组。数组的遍历推荐使用while index索引，Array#forEach 的方式进行遍历。
 
@@ -281,11 +281,11 @@ undefined，空位则代表数组中不存在这个元素。
 数组，不传入start end 则将整个类数组元素，转换成为数组。splice为删除子数组元素！！！
 
 
-### 运算符重载
+### 运算符
 
 - Object#valueof Object#toString 
-  当基础类型 string number 与 object 进行加法运算时，先调用valueof 如果返回为 number，string基础类型则不再调用toString,否则需要再调用
-  toString进行类型转换，再执行运算操作。
+  当基础类型 string number 与 object 进行加法运算时，先调用 valueof 如果返回为 number，string基础类型则不再调用toString,否则需要再调用
+  toString 进行类型转换，再执行运算操作。
   
   *其中Date对象除外,Date对象的toString优先级高于valueOf的优先级*
 
@@ -321,3 +321,68 @@ undefined，空位则代表数组中不存在这个元素。
  普通运算符是左结合，**,?:运算符是右结合
  
  2**3**2 == 2^(3^2) a ? b : c ? d : e ? f : g == a?(b:c?(d:e?(f:g)))
+ 
+### 类型转换
+
+- 强制类型转换使用对应的基础类型构造函数 Number(转换策略较为严格)，Boolean，String。
+
+- parseInt,parseFloat...转换较为宽松(123aaa) 可以转换为 123，Number则只能转换成为NaN。
+
+- Number转换原则：valueOf,toString的优先级，前者高于后者。valueof 返回的如果的是基础类型，则调用Number，如果是对象类型则调用toString 如果返回的是基础类型则调用
+Number，返回的如果依旧是对象类型则抛出错误。通常Object#toString,Function#toString返回的为为字符串基础类型，调用Number转换成number为NaN。
+
+- String转换原则：toString的优先级高于valueof。其余同Number的转换原则。
+
+- Boolean转换原则：除 undefined,null,NaN,0,''转换成为false，其余均会转换成为true。
+
+- 自动类型转换： 有字符串的地方均会转换成为字符串，其余地方预期是什么便会转成什么，预期既为数字又为字符串，则数字优先。
+  null 转换成数字为 0。
+  undefined 转换成为数字为 NaN。
+  
+### 异常处理
+
+出现异常时，则当前事件循环中的JS语句停止执行(与java线程中的代码的执行逻辑相同)
+
+throw：可以抛出Error，也可以抛出任何类型，包括基础类型(number,string,boolean,null,undefined,object)，对象类型(object array function)
+(type of 不能区分 Array 和 Object,但是可以区分 Function)
+
+- Error 自带的属性：
+  message:错误提示信息
+  name:错误显示的名称
+  stack：错误调用堆栈
+  
+- try catch finally 中均带有 return (同java使用javap查看字节码得出的结论)
+  抛出异常被捕获时 catch finally 中均有return语句，以finally中的return结果作为该函数的返回值，catch中的return会被覆盖
+  未抛出异常时则使用 finally中的return为返回值。
+  (行为同java)
+  try内部return某个变量，finally内再对变量执行操作，返回的是执行操作前的变量的值
+  
+- Error类型，内置为六大类型：
+
+  SyntaxError:语法错误
+  ReferenceError:引用未定义的变量
+  URIError:encodeURI,decodeURI等编码解码操作，传入的参数不符合规范
+  TypeError:使用 new调用非构造函数，将对象的属性当做方法调用
+  RangeError: 数组长度为不合法的值(负值，大于2^32-1),调用Number时超出Number的表示范围
+  EvalError：eval函数执行异常。目前该Error不会抛出
+  
+  
+  
+## 常用函数及区别
+
+- JSON.stringify:object转换成为Json 字符串
+  JSON.parse: 解析Json字符串为对象
+  
+- escape:
+  unescape:
+  
+- encodeURI:
+  decodeURI:
+  encodeURIComponent
+  decodeURIComponent
+  
+- btoa: base64编码，只能编码ASCII字符集，其他字符集需要先执行encodeURI转换成为合法的ASCII字符集才能进行编码
+  atob: base64解码
+  b-> binary a-> ASCII(64个可读ASCII字符集)
+  base64:即为转换二进制为64个ASCII可读字符
+  debase64:即为转换64个ASCII为原始的二进制数据
