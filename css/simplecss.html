@@ -1,159 +1,96 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="width: 100vw">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <!--    <link rel="stylesheet" href="./simple2.css"/>-->
-    <!--    <link rel="stylesheet" href="./simple.css">-->
-    <!--Chrome 不支持 alternate-->
-    <!--    <link rel="alternate stylesheet" title="Default" href="./simple2.css"/>-->
-    <!--    <link rel="alternate stylesheet" title="Default" href="./simple.css">-->
+
 
     <style type="text/css">
-        <!--
-        @import "simple.css"; /*后面出现的样式会级联替换前面出现的样式*/
-        ul {
-            background: rebeccapurple
-        }
-
-        /*li{color: red}*/
-        ul li {
-            background: blue;
-            color: blanchedalmond
-        }
-
-        -->
-
+        @import "special.css";
     </style>
 </head>
-</head>
-<body style="margin:0">
-<
-<div style="position:absolute;width: 100px;height: 80px;background: hotpink;overflow:hidden;margin-top:500px;margin-top: 300px">
-    <div style="position: absolute;top: 10px;right: 10px;bottom: 10px;left: 10px;background: blue;width: 25px;height: 25px"></div>
+
+<body style="width: 100vw;margin: 0">
+<div style="width: auto;text-align: center;font-size: 1em;line-height: 1em">AAA</div>
+<div>
+    <h1 style="display: run-in;border: 1px dotted pink">H3H3H3</h1>
+    <p style="border: 1px dashed palevioletred;white-space: normal;height: auto;font-size: 25px;display: inline;padding-top: 0.5em">
+        PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+        PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+        PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+        PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+        PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+        PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+        PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP</p>
 </div>
-<div style="width: 50px;height: 50px;background: hotpink;position:absolute;top:0;left:0;margin-bottom: 400px;clip: rect(0px,10px,10px,0px);z-index: 10">
-    <div style="width: 100px;height: 100px;background: blue;position: absolute;top: 25px;left: 25px">
-
-    </div>
+<div>
+    AAAAAA<p style="display: inline-block;width: auto;text-align: center;font-size: 25px;height: 2em">Google Baidu
+    Alibaba</p>AAAAA
 </div>
-<div style="width: 50px;height: 50px;background: hotpink;overflow:hidden;margin-top:500px;margin-bottom: 50px">
-    <p style="margin-block-start: 0px;margin-block-end: 0px">aadakfljkdla
-        jfdklafjakl
-        fjdkalfjkal;
-        fjaklfjdklajfkldafjaklfjda</p>
-</div>
-
-<!-- 设置 inline 则两个div 都不显示
-不设置 float:left 作为块级元素的 div 第二个会显示在第一个的下面
-第一个设置 float:left 之后 第二个元素则会符合 float 定义的规则与第一个 div 在同一行显示-->
-<div style="display: block;width: 100vw;height: 50vh;position: relative">
-
-    <div style="/*height: 50vh;width: 50vw;*/
-    background: pink;position: relative;top: 0;left: 0;
-    right:0;bottom:0;width:auto;height:auto;
-    padding: 50px;border: yellow 10px solid;
-    display: block;float: left;">
-        <div style="position:absolute;top: 50%;left: 50%;width:50%;height:50%;background: blue"></div>
-    </div>
-<!--使用 min-width 和 min-height 对于使用 vh vw 设置尺寸的无效，-->
-    <div style="height: 20%;width: 50%;background: pink;position: relative;right: 0;top:0;display: block;float: right;
-    min-width: 100px;min-height: 100px;max-width: 400px;max-height: 400px">
-        <div style="position:absolute;top: 50%;left: 50%;width:50%;height:50%;background: blue"></div>
-    </div>
-</div>
-
-<!--使用 absolute 则脱离文档流，当前元素既不占用文档流的位置，也不相对于基于文档流的位置在进行 relative 相对布局-->
-<!--relative 则占用文档流，先通过文档流获得基础位置，再通过基础位置获得相对位置-->
-<div style="display: block;width: 100vw;height: 50vh;position: absolute">
-    <div style="display: block;width: 40px;height: 40px;position: absolute;top: 40px;left: 40px;background: deeppink;line-height: 40px">aaaa</div>
-    <div style="display: block;width: 40px;height: 40px;position: absolute;top: 80px;left: 80px;background: blue"></div>
-    <div style="display: block;width: 40px;height: 40px;position: absolute;top: 120px;left: 120px;background: green"?></div>
-    <div style="display: block;width: 40px;height: 40px;position: absolute;top: 160px;left: 160px;background: orange"></div>
-</div>
-
-
-
-
-<h1 style="display: inline">This is H1</h1>
-<h2 style="display: inline">This is H2</h2>
-<h3>This <em>is H3</em></h3>
-<h4 class="llll aaaa">h4 with class</h4>
-<p>pppppppppppppp
-<p>aaaaaaaa</p></p>
-<div style="display: list-item;background: antiquewhite">
-    <div><p>PPPPPPP</p></div>
-    <div><p>PPPPPPP</p></div>
-</div>
-<input><a>aaa</a>
-<ol>
-    <li id="1">1</li>
-    <li id="2">2</li>
-</ol>
-<p style="display: inline">aaaaa<em style="display: block">AAAAA</em></p>
-<p style="display: block">aaaaa<em style="display: inline">AAAAA</em></p>
-
-<div style="width: 500px;height: 500px;display: block ;position: relative;top: 10px;left: 20px">
-    <img src="872px-Android_robot.svg.png"  width="200" height="200" style="float: left;margin: 20px;display:none;
-    position: absolute;top: 20px;left: 20px"/>
-    <img src="872px-Android_robot.svg.png"  width="200" height="200" style="float: left;margin: 20px;display: none;
-position: absolute;bottom: 150px;right: 150px"/>
-    <img src="872px-Android_robot.svg.png" width="100" height="100" style="float: left;margin: 20px"/>
-    <img src="872px-Android_robot.svg.png" width="200" height="200" style="float: left;margin: 20px"/>
-    <img src="872px-Android_robot.svg.png" width="200" height="200" style="float: left;margin: 20px"/>
-    <img src="872px-Android_robot.svg.png" width="200" height="200" style="float: left;margin: 20px"/>
-    <img src="872px-Android_robot.svg.png" width="100" height="100" style="float: left"/>
-    <img src="872px-Android_robot.svg.png" width="200" height="200" style="float: left"/>
-    <img src="872px-Android_robot.svg.png" width="200" height="200" style="float: left"/>
-    <ul  style="clear: left">
-        <li>ULUL</li>
-        <li>ULUL</li>
-        <ol>
-            <li>olol</li>
-            <li>olol</li>
-            <ul>
-                <li>lili<em>EMMEM</em></li>
-                <em>ememem</em>
-                <li>lili</li>
-                <ol>
-                    <li>lili<em>ememe</em></li>
-                </ol>
-            </ul>
-        </ol>
-    </ul>
-</div>
-
-<div  style="width: 100%;height: 300px;display: block;position: relative">
-    <a style="position: absolute;top: 10%;left: 50%">aaaaa</a>
-</div>
-<a>
-    <p>pppp</p>
-    <ol>
-        <li>lilili</li>
-        <li>lilili</li>
-    </ol>
-    <ol>
-        <li>lilili</li>
-        <li>lilili</li>
-    </ol>
-    <a>aaaa</a>
+<a style="display: block">
+    <p style="display: inline">PPPPP</p>
+    <p style="display: inline">22222PPPPP22222</p>
+    <p style="display: inline;">333333333333PPPPPPPPPPPPP333333333333</p>
 </a>
-<ol>
-    <li>lilili<a>aaaaa</a></li>
-    <li>lilili<a>aaaaa</a></li>
-</ol>
-<a href="https://www.baidu.com">baidu</a>
-<p >ffffffff
-fffff
-ffffffffff ff</p>
-<div style="width: 50vw;height: 50vh;background: cadetblue;overflow: scroll">
-    <h6 style="padding: 0;margin: 0">定位 Demo</h6>
-
-<!--    <div style="position: absolute;top:25%;left: 25%;width: 25%;height:25%;background: yellowgreen"></div>-->
-    <div style="position: relative;top:25%;left: 25%;width: 125%;height:125%;background: yellowgreen"></div>
-
+<div style="display: block" id="google">
+    <a>Google</a><a>Google Mail</a><a>Google Map</a><a>Google Driver</a>
 </div>
 
+<!--p div 为块元素 span 匿名文本元素 为行内元素-->
+<div style="background: lightpink">
+    <img src="872px-Android_robot.svg.png" style="height: 20px;display: block;">
+</div>
+
+<div style="background: lightpink">
+    <span>P2P2P2P2P2P2P2P2P2P2P2P2P2P2P2P2P2P2</span>
+    <img src="872px-Android_robot.svg.png" style="height: 20px;margin-left: -20px">
+    <span>P2P2P2P2P2P2P2P2P2P2P2P2P2P2P2P2P2P2</span>
+</div>
+
+<p style="margin-top: 5px;margin-bottom: 0">
+    <span style="border: 1px solid black">SSSSSSSSS</span><br>
+    <span>SSSSSSSSS</span>
+    <span>SSSSSSSSS</span>
+
+</p>
+
+<p><span>P2P2P2P2P2P2P2P2P2P2P2P2P2P2P2P2P2P2</span></p>
+
+<div style="height: 400px;width: 400px;padding-top: 100px;padding-bottom: 100px;padding-left: 10px;padding-right: 10px;border-top: dashed green 2px;margin-top: 200px">
+    <p style="width:100px;">Div Content</p>
+</div>
+
+<p style="word-spacing: 5px;letter-spacing: 5px">a word space around !
+    <u>underline</u><S>Line Through</S><strike>Line Through</strike>
+    <a style="text-decoration: overline;padding-top: 20px;">Over Line</a>
+
+    <a style="text-decoration: blink">Blink Text（Chrome IE Not Support)</a>
+    <br/>
+    <a style="text-shadow: yellow 5px 5px 1px,blue 10px 10px 1px;color: black">Text Shadow</a>
+    <br/>
+</p>
+
+<p style="direction: ltr;border-bottom:solid;color: black">tyle = " text- decoration: underline
+    "</p>
+
+<p style="text-decoration: underline">I am paragraph! With Strong <strong
+        style="text-decoration: underline;color: yellow">Strong Text</strong></p>
+<img src="872px-Android_robot.svg.png" style="float:left;width: 60px;height: 60px">
+<p style="display: block;width: 50%;text-align: right">
+    aaaafddaffadaaaaaaaaaaaddddddddddaaaafddaffadaaaaaaaaaaafddaffadaaaaaaaaaaafddaffadaaaaaaaaaaa</p>
+<!--行内元素分别实现了上标与下标-->
+<p style="font-size: 50px;display: inline">aaa
+<p style="vertical-align: sub;display: inline">alphabet</p>
+<p style="vertical-align: super;display: inline">super</p></p>
+<div id="inherit">
+
+    <!--    anchor 用户代理（浏览器）的 a:link 伪属性占据上风-->
+    <a>I am anchor</a>
+    <br/>
+    <div id="div_div">
+        abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMOPQRSTUVWXYZ
+    </div>
+</div>
 
 </body>
 </html>
