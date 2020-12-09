@@ -5,25 +5,25 @@
     <title>Title</title>
     <style>
         body{margin: 0}
-        div.div{margin: 10px 20px 10px 20px;width: auto;height: 50px;background: lightpink}
+        div.div{margin: 10px 20px 10px 20px;width: auto;height: 50px;background: lightpink;color: black}
         .border_color_same_as_fontcolor{border: groove 10px;color:blue }
-        table{margin:0;border: groove 2px yellow;width: 100vw}
+        table{margin:0;border: groove 2px yellow;width: auto}
         tr{border: dashed 2px blue}
-        td{width:30%;border: dashed 2px green}
+        td{border: dashed 2px green}
         .alink:link{border-style: solid;border-width: 5px;border-color: transparent;color: green}
         .alink:visited{color: yellow}
         .alink:hover{border-color: gray}
     </style>
 </head>
 <body>
-<div class="div"></div>
+<div class="div" style="border-bottom-width: 5px;border-bottom-style: dotted"></div>
 <div class="div"></div>
 <div class="div"></div>
 <div class="div"></div>
 <div class="div"></div>
 <div class="border_color_same_as_fontcolor"></div>
 
-<table>
+<table >
     <tr>
         <td>1111</td>
         <td>1111</td>
@@ -48,10 +48,68 @@
 width: 50vw;height: 50vh;background-size: 200px;
 background-repeat: no-repeat;background-position: 50% 50%;
 background-attachment: fixed">
+    <div>BackGround Fix Div</div>
 </div>
 
 <div>aadddddddddddddddddddddddddddddddddddddddddddddd<img src="872px-Android_robot.svg.png" style="width: 20px;float: left">ddddddddddd
-ddddddddddddddddddddddddddddddddd
+    <p>PPPPP is Block Element</p>dddddddddddddTTT
+<!--    table 默认是block 元素，但是可以设置为 inline 元素-->
+
+    <table style="display: inline-table">
+<!--        -->
+        <caption>table caption</caption>
+        <tr>
+            <td width="250px">Set Table as inline table</td>
+            <td>1111</td>
+            <td>1111</td>
+        </tr>
+
+        <tr>
+            <td>1111</td>
+            <td>1111</td>
+            <td>1111</td>
+        </tr>
+
+        <colgroup>
+            <col>
+            <col>
+        </colgroup>
+
+        <thead>
+        <td>Header 1</td>
+        <td>Header 2</td>
+        <td>Header 3</td>
+        <td>Header 4</td>
+        </thead>
+        <tfoot>
+        <td>foot 1</td>
+        </tfoot>
+    </table>TTTdddddddddddddddddddd
 dddddddddddddddddddddddddddddddddd</div>
+
+<table style="border-collapse:separate;border-spacing: 0;table-layout: fixed;width: auto">
+<!--    表标题 通过 caption-side 定义表的标题在上面还是在下面-->
+    <caption style="caption-side: top;">Table title</caption>
+<!--    colgroup/col 结合 table-layout:fixed 可以设置一列的宽度-->
+    <colgroup>
+        <col width="100px" style="background: blue"/>
+        <col width="200px"/>
+    </colgroup>
+
+    <tr>
+        <td style="background: yellow;height: 5px">AAAA<br>aaaa<br>AAAA<div>ADIV</div></td>
+        <td style="text-align: right">BBBB</td>
+        <td>CCCC</td>git
+        <td>DDDD</td>
+    </tr>
+
+    <tr>
+        <td>r2c1AAA</td>
+        <td>BBBB</td>
+        <td>CCCC</td>git
+        <td>DDDD</td>
+    </tr>
+</table>
+
 </body>
 </html>

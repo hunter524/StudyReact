@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Review Css</title>
+    <link rel="stylesheet" type="text/css" href="sample.css">
+    <link rel="icon" href="icon.png">
+</head>
+<body>
+<div>
+    <div>Block And Inline</div>
+    <div>Block</div>
+    <div>Block</div>
+    <a>Before<em>Inline Em</em> After <ins>Ins Element: Underline</ins> <del>Del Element: Delete line</del></a>
+<!-- a 属性 href:表示跳转链接 title:鼠标悬停时展示的问题 target:指定打开链接的方式 _blank 表示新开页面 其余三个属性均是在当前页面打开   -->
+    <div><a href="https://www.baidu.com" title="Baidu" target="_blank">Baidu Target Blank</a></div>
+    <div><a href="https://www.baidu.com" title="Baidu" target="_parent">Baidu Target Parent</a></div>
+    <div><a href="https://www.baidu.com" title="Baidu" target="_self">Baidu Target Self</a></div>
+    <div><a href="https://www.baidu.com" title="Baidu" target="_top">Baidu Target Top</a></div>
+    <input type="text">
+<!--  只有属性名称没有属性值的属性 只要存在便表示启用   -->
+    <input type="text" disabled>
+
+    <p>Blank  Will Be      Merge</p>
+    <p>Blank
+        Will Be
+        Merge</p>
+    <!--    在 html 中出现的 <> " ' & 只能用实体引用(转义符) 表示 Md 中也可以使用这些转义符号-->
+    <!--    更多的实体引用列表:https://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references-->
+    <p>&lt;&gt;&quot;&apos;&amp;&Hat;&lmidot;</p>
+    <p>注释以 &lt;!-- 开头 以 --&gt; 结尾 会被浏览器忽略但是会被显示在浏览器的html元素中</p>
+    <p id="color_blue">适配 id 选择器 color_blue</p>
+
+
+    <p>head 中的 tag 元素 meta 元数据 使用 charset 属性指明当前 html 的编码方式,使用 name content 属性添加额外数据,name 的值可以为 author,description
+    等关键key值,content 则为该key值对应的内容.</p>
+    <p>description 的 key 值作用通常是描述该网站的实际内容,便于搜素引擎抓取,显示在搜素结果概览页面中便于搜素用户了解当前网页.</p>
+    <p>FaceBook 定义了元数据协议 <a href="https://ogp.me/" title="OGP => Open Graph Protocol">Open Graph Data</a>
+    Twitter 同样定义有自己的元数据展示协议.</p>
+    <p>在 Head 中可以使用 link 标签加载 css rel (Relation) 指定关系为 stylesheet type 指定为 text/css href 表示引用的 css 样式表的文件链接</p>
+    <p>script 标签 不一定需要放置在 head 中,其会阻止元素的正常加载.通常可以将 script body 结束标签之前,这样会先加载body中的元素样式显示,再加载script 标签中的内容.
+    script 标签可以放置在 body 结束标签之前的任何位置.</p>
+    <p>html 标签以及其他标签可以设置 lang 属性标记,属性值可以参考 <a href="https://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1</a>
+        <a href="https://www.w3.org/International/articles/language-tags/">语言tag描述文档</a>
+    </p>
+
+</div>
+<!--<script> alert("alert")</script>-->
+</body>
+</html>

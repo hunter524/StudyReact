@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSS:The Definitive Guide_Section12_list</title>
+    <style>
+        /**{list-style-position: inside}*/
+    /*    li::marker{padding: 0;margin: 0}*/
+    /*    li{padding: 0;margin: 0}*/
+    /*    p em:before{content: "AAA\A BBBB"}*/
+    /*    body:before{content: "Text: " attr(text) " | Link:" attr(link) open-quote "111111" close-quote no-open-quote "2222" no-close-quote}*/
+    /*    p {quotes: '(' ')' '[' ']';}*/
+    /*    p:before{content: no-open-quote}*/
+    /*    p:after{content: no-open-quote}*/
+
+    /*    a:before{content: open-quote}*/
+    /*    a:after{content: close-quote}*/
+    /*!*    通过 counter-reset 和 counter-increment 定义是否重置计数和计数增量*!*/
+    /*    body{counter-reset: chapter 0}*/
+    /*    h1 {counter-reset: section}*/
+    /*    h1:before{counter-reset:section subsec;counter-increment: chapter 1;content: counter(chapter,lower-roman)"."}*/
+    /*    h2 {counter-reset: subsec;}*/
+    /*    h2:before{counter-increment: section 1;content:counter(chapter) "." counter(section)}*/
+    /*    h3:before{counter-increment: subsec 1;content:counter(chapter) "." counter(section) "." counter(subsec)}*/
+
+    /*    h1{counter-reset: order}*/
+    /*    h1 p:before{counter-increment: order 1;content: counters(order,".")}*/
+
+    </style>
+</head>
+<!--text="blue" link="yellow"-->
+<body>
+<div>
+<!--    三级有序列表-->
+<!--    主动设置 padding-left: 0 可以取消用户浏览器默认对于列表元素的缩进-->
+    <ol style="">
+        <li>11111</li>
+        <ol>
+            <li>11111</li>
+                <ol>
+                    <li>11111</li>
+                    <li >22222</li>
+                    <li>33333</li>
+                    <li>44444</li>
+                </ol>
+            <li>22222</li>
+            <li>33333</li>
+            <li>44444</li>
+        </ol>
+        <li>22222</li>
+        <li>33333</li>
+        <li>44444</li>
+    </ol>
+<!--    三级无序列表-->
+    <ul>
+        <li>11111</li>
+        <ul>
+            <li>11111</li>
+            <ul>
+                <li>11111</li>
+                <li>22222</li>
+                <li>33333</li>
+                <li>44444</li>
+            </ul>
+            <li>22222</li>
+            <li>33333</li>
+            <li>44444</li>
+        </ul>
+        <li>22222</li>
+        <li>33333</li>
+        <li>44444</li>
+    </ul>
+
+    <li>
+        <div style="display: flex;flex-direction: column;align-items: center">
+            <div style="width: 100px;height: 20px;">AAAAA</div>
+            <div style="width: 100px;height: 20px;">BBBBB</div>
+            <div style="width: 100px;height: 20px;">CCCCC</div>
+        </div>
+    </li>
+    <li>single li</li>
+    <li>single li</li>
+    <p><em>EMEMEME</em></p>
+    <p>PPPPP<a>P2P2P2P2</a></p>
+
+    <h1> 111111
+        <h2>H2-1
+            <h3>h3-1</h3>
+            <h3>h3-2</h3>
+            <h3>h3-3</h3>
+        </h2>
+        <h2>H2-2
+            <h3>h3-1</h3>
+            <h3>h3-2</h3>
+        </h2>
+    </h1>
+    <h1>222222</h1>
+
+    <h1> 333333 </h1>
+    <h2>H2-1</h2>
+    <h3>h3-1</h3>
+    <h3>h3-2</h3>
+    <h3>h3-3</h3>
+    <h2>H2-2</h2>
+    <h3>h3-1</h3>
+    <h3>h3-2</h3>
+
+    <h1>PH1PH1
+        <p>PPPPPPP
+            <h1>PH1-1PH1-1
+        <p>PPPPPPP</p>
+        <p>PPPPPPP</p>
+        <p>PPPPPPP</p>
+    </h1>
+    </p>
+    <p>PPPPPPP</p>
+    <p>PPPPPPP</p>
+    <h1>PH1-1PH1-1
+        <p>PPPPPPP</p>
+        <p>PPPPPPP</p>
+        <p>PPPPPPP</p>
+    </h1>
+
+    </h1>
+
+    <a style="font: icon"> Sys Button</a>
+    <a style="color: ActiveBorder">ActiveBorder</a>
+    <a style="color: ActiveCaption">ActiveCaption</a>
+    <a style="color: AppWorkspace">AppWorkspace</a>
+    <a style="color: Background">Background</a>
+    <a style="color: ButtonFace">ButtonFace</a>
+    <a style="color: ButtonHighlight">ButtonHighlight</a>
+    <a style="color: ButtonShadow">ButtonShadow</a>
+    <a style="color: ButtonText">ButtonText</a>
+    <a style="color: CaptionText">CaptionText</a>
+    <a style="color: GrayText">GrayText</a>
+    <a style="color: Highlight">Highlight</a>
+    <a style="color: HighlightText">HighlightText</a>
+    <a style="color: InactiveBorder">InactiveBorder</a>
+    <a style="color: InactiveCaption">InactiveCaption</a>
+    <a style="color: InactiveCaptionText">InactiveCaptionText</a>
+    <a style="color: InfoBackground">InfoBackground</a>
+    <a style="color: InfoText">InfoText</a>
+    <a style="color: Menu">Menu</a>
+    <a style="color: MenuText">MenuText</a>
+    <a style="color: Scrollbar">Scrollbar</a>
+    <a style="color: Background">Background</a>
+    <a style="color: Background">Background</a>
+    <a style="color: Background;cursor: pointer">Background</a>
+
+    <div style="cursor: default">default</div>
+    <div style="cursor: pointer">pointer</div>
+    <div style="cursor: crosshair">crosshair</div>
+    <div style="cursor: move">move</div>
+    <div style="cursor: e-resize">e-resize</div>
+    <div style="cursor: ne-resize">ne-resize</div>
+    <div style="cursor: nw-resize">nw-resize</div>
+    <div style="cursor: n-resize">n-resize</div>
+    <div style="cursor: se-resize">se-resize</div>
+    <div style="cursor: sw-resize">sw-resize</div>
+    <div style="cursor: s-resize">s-resize</div>
+    <div style="cursor: w-resize">w-resize</div>
+    <div style="cursor: text">text</div>
+    <div style="cursor: wait">wait</div>
+    <div style="cursor: help">help</div>
+    <div style="cursor: progress">progress</div>
+
+    <div title="Title Content" style="outline-style: dotted;outline-color:invert">Title Attribute</div>
+
+    <input style="outline-style: dot-dash" />
+
+
+
+
+
+
+
+</div>
+</body>
+</html>
