@@ -1,6 +1,13 @@
 const _l = require('lodash');
 const _r = require('ramda')
 const _m = require('moment')
+const fs = require("fs")
+const asserts = require('assert')
+const OS = require('os')
+const folktale = require('folktale')
+const MayBe = require('folktale/maybe')
+const jquery = require("jquery")
+
 
 function Container(x){
     this.__value = x
@@ -63,3 +70,24 @@ var itemPlus1 = _r.map(arrayItemPlus1);
 
 var nArray = itemPlus1([1,2]);
 console.log(nArray)
+
+console.log(OS.version())
+
+var lelements =[{lower:'lower'},{lower:'high'}]
+function toUpper(v){
+    return v.toUpperCase()
+}
+// 模仿 函数式编程的 Right Left 第一层 map 遍历数组,第二层 map 遍历数组中的对象
+// Either 的 Right Left 操作避免了普通的 if else 嵌套操作
+// map 操作则避免了 for 循环
+console.log(_r.map(_r.map(toUpper))(lelements))
+
+function linkTwo(first,second){
+    return "first:"+first+"second:"+second;
+}
+
+var clinkTwo = _r.curry(linkTwo);
+// curry 化还是第一个参数对应第一个参数,第二个参数对应第二个
+console.log(clinkTwo("1")("2"));
+
+console.log(MayBe.Just("0"))
