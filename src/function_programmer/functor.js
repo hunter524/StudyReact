@@ -1,9 +1,11 @@
 //该篇教程的大部分库均使用了 lodash 和 ramda 中的方法
-
 const _l = require("lodash")
 const _r = require("ramda")
 const moment = require('moment');
 const localStorage = require('node-localstorage')
+
+//升级了 node 使用 import 语法
+const Task =  require("folktale/concurrency/task")
 
 
 var Container = function (x) {
@@ -311,8 +313,61 @@ console.log(zoltar({birthdate: 'balloons!'}));
 // IO 函子 避免副作用,与上述 Maybe Either 的不同之处在于该函子不只是容纳值
 // 其容纳的是方法而不再是值
 //  getFromStorage :: String -> (_ -> String)
+// 方法签名 通过接收一个 String 返回一个函数类型,函数类型是一个不接受任何参数返回一个 String 类型的函数
+// 因此该处这么做的目的是将副作用进行延迟,将副作用归到调用者这边
 var getFromStorage = function(key) {
     return function() {
         return localStorage[key];
     }
 }
+
+// IO 函子目前只容纳函数,用于隔离副作用
+// 具体使用参见 io_in_browser 目录 (IO 的示例依赖于 window document)
+var IO = function(f) {
+    this.__value = f;
+}
+
+IO.of = function(x) {
+    return new IO(function() {
+        return x;
+    });
+}
+//map 操作的定义则是先应用原先的 IO 函子中定义的函数 再应用传入的函数
+// f(this.__value(v)) => f 为map传入的函数,this.__value 为原先 IO 函子定义的函数
+IO.prototype.map = function(f) {
+    return new IO(_r.compose(f, this.__value));
+}
+
+// 题外例子使用 node socket api 连接 v2ray 代理
+// 同时查看 /var/log/v2ray/access.log 日志可以观察到 socket 的连接状况
+const net = require("net")
+const fs = require("fs")
+// var socket = net.connect({
+//     host:"127.0.0.1",
+//     port:1088
+// },()=>{
+//     console.log("connection Listener:"+JSON.stringify(arguments[1]))
+//     console.log("socket localaddr:"+socket.localAddress+" port:"+socket.localPort)
+// })
+// socket.on("close",(hasErr)=>{
+//     console.log("socket on close hasErr:"+hasErr)
+// })
+// socket.write("hello")
+
+// ======================= 使用 folktale Task=======
+// 函数式编程指北中的 folktale 推测版本比较老(folktale 1.x),
+// 与当前的  folktale 2.x 的api不兼容因此需要参考 folktale 官方文档做相应的更改才可以使用
+// task 的执行则与 IO 容器,Promise 的 then 操作具有相同的思路,延迟副作用的产生(在构建执行链的过程中不产生任何副作用)
+var readFile = function(filename) {
+    return Task.task(resolver =>{
+        fs.readFile(filename, 'utf-8', function(err, data) {
+            err ? resolver.reject(err) : resolver.resolve(data);
+        });
+    });
+};
+var readFileTask = readFile("/home/hunter/lintlist.txt").map(_r.split('\n')).map(_r.head);
+readFileTask.run().listen({
+    onCancelled: () => { console.log('the task was cancelled') },
+    onRejected: (error) => { console.log('something went wrong') },
+    onResolved: (value) => { console.log(`The value is ${value}`) }
+})
