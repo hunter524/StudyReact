@@ -10,6 +10,20 @@ Container.of = function (x) {
     return new Container(x);
 };
 
+Container.prototype.map = function (f) {
+    return new Container(f(this.__value))
+}
+
+Container.prototype.join = function (f) {
+    return this.__value
+}
+// join 去除掉的洋葱皮是 map 包装的外层的洋葱皮
+// 保留的是 map 方法返回的洋葱皮
+Container.prototype.chain = function (f) {
+    return this.map(f).join()
+}
+
+
 
 // Maybe Functor
 let Maybe = function (x) {
@@ -80,10 +94,15 @@ IO.prototype.join = function () {
     return this.__value
 }
 
+let chain = _r.curry(function(f, m){
+    return m.map(f).join(); // 或者 compose(join, map(f))(m)
+});
+
 module.exports = {
     Maybe:Maybe,
     Left:Left,
     Right:Right,
     Container:Container,
-    IO,IO,
+    IO:IO,
+    chain:chain,
 }

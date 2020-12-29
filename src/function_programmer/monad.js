@@ -12,6 +12,7 @@ const Left = Functors.Left
 const Right = Functors.Right
 const Container = Functors.Container
 const IO = Functors.IO
+const chain = Functors.chain
 
 // functor 则是具有 map 方法的容器
 // pointed functor (具有 of 方法的 functor 称为 pointed functor)
@@ -188,9 +189,7 @@ console.log(`Join One Maybe First: ${JSON.stringify(firstMaybeMaybeMaybe.__value
 // chain 版本 该处的 chain 与 ramda#chain 的定义不同
 
 //  chain :: Monad m => (a -> m b) -> m a -> m b
-var chain = _r.curry(function(f, m){
-    return m.map(f).join(); // 或者 compose(join, map(f))(m)
-});
+
 
 var firstAddressStreet = _r.compose(
     chain(safeProp('street')), chain(safeHead), safeProp('addresses')
