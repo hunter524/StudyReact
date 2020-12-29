@@ -7,19 +7,19 @@ const localStorage = require('node-localstorage')
 //升级了 node 使用 import 语法
 const Task =  require("folktale/concurrency/task")
 
+const Functors = require("./comm_functors")
+const Maybe = Functors.Maybe
+const Left = Functors.Left
+const Right = Functors.Right
+const Container = Functors.Container
+const IO = Functors.IO
 
-var Container = function (x) {
-    this.__value = x;
-}
 
-Container.of = function (x) {
-    return new Container(x);
-};
+
 console.log("Simple Container==========")
 var container3 = Container.of(3);
 //=> Container(3)
 console.log(container3)
-
 
 var containerhotDogs = Container.of("hotdogs");
 //=> Container("hotdogs")
@@ -59,22 +59,6 @@ console.log(concatLength)
 
 // MayBe 函子 MayBe 的 map 函子相对于 Container 函子添加了 null 安全判断
 console.log("Simple MayBe Functor ==========")
-
-var Maybe = function (x) {
-    this.__value = x;
-}
-
-Maybe.of = function (x) {
-    return new Maybe(x);
-}
-
-Maybe.prototype.isNothing = function () {
-    return (this.__value === null || this.__value === undefined);
-}
-
-Maybe.prototype.map = function (f) {
-    return this.isNothing() ? Maybe.of(null) : Maybe.of(f(this.__value));
-}
 
 var maybeStrMachA = Maybe.of("Malkovich Malkovich").map(_r.match(/a/ig));
 //=> Maybe(['a', 'a'])
@@ -213,29 +197,7 @@ console.log(getTwenty({ balance: 10.00}));
 // Left 忽略 map 时传递进入的 function
 // Right 则像maybe 一样在 map 中取出值/执行map 操作放回 Right 容器
 console.log("From Right Left To Either=============")
-var Left = function(x) {
-    this.__value = x;
-}
 
-Left.of = function(x) {
-    return new Left(x);
-}
-
-Left.prototype.map = function(f) {
-    return this;
-}
-
-var Right = function(x) {
-    this.__value = x;
-}
-
-Right.of = function(x) {
-    return new Right(x);
-}
-
-Right.prototype.map = function(f) {
-    return Right.of(f(this.__value));
-}
 
 console.log(Right.of("rain").map(function(str){ return "b"+str; }));
 // Right("brain")
@@ -319,23 +281,6 @@ var getFromStorage = function(key) {
     return function() {
         return localStorage[key];
     }
-}
-
-// IO 函子目前只容纳函数,用于隔离副作用
-// 具体使用参见 io_in_browser 目录 (IO 的示例依赖于 window document)
-var IO = function(f) {
-    this.__value = f;
-}
-
-IO.of = function(x) {
-    return new IO(function() {
-        return x;
-    });
-}
-//map 操作的定义则是先应用原先的 IO 函子中定义的函数 再应用传入的函数
-// f(this.__value(v)) => f 为map传入的函数,this.__value 为原先 IO 函子定义的函数
-IO.prototype.map = function(f) {
-    return new IO(_r.compose(f, this.__value));
 }
 
 // 题外例子使用 node socket api 连接 v2ray 代理
