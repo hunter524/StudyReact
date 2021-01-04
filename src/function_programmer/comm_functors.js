@@ -6,6 +6,8 @@ let Container = function (x) {
     this.__value = x;
 }
 
+// pointed Functor 的定义:实现了 of 方法的 Functor
+// 功能是实现最小化的上下文
 Container.of = function (x) {
     return new Container(x);
 };
@@ -17,11 +19,17 @@ Container.prototype.map = function (f) {
 Container.prototype.join = function (f) {
     return this.__value
 }
-// join 去除掉的洋葱皮是 map 包装的外层的洋葱皮
+// join 去除掉的洋葱皮是 map 包装的外层的洋葱皮 ( 即原始的 Container 的值)
 // 保留的是 map 方法返回的洋葱皮
 Container.prototype.chain = function (f) {
     return this.map(f).join()
 }
+
+// ap 函子是实现了 ap 方法的 pointed Functor
+Container.prototype.ap = function (other_container){
+    return other_container.map(this.__value)
+}
+
 
 
 
@@ -38,6 +46,7 @@ Maybe.prototype.isNothing = function () {
     return (this.__value === null || this.__value === undefined);
 }
 
+// Maybe 在 map 过程中会触发短路机制(即 Maybe 是 nothing 则 f 方法压根不会执行
 Maybe.prototype.map = function (f) {
     return this.isNothing() ? Maybe.of(null) : Maybe.of(f(this.__value));
 }
@@ -46,6 +55,11 @@ Maybe.prototype.map = function (f) {
 Maybe.prototype.join = function() {
     return this.isNothing() ? Maybe.of(null) : this.__value;
 }
+
+Maybe.prototype.ap = function (other_container){
+    return other_container.map(this.__value)
+}
+
 
 // Left Right Functor
 
