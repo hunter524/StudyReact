@@ -2,6 +2,7 @@ const _r = require("ramda")
 const Functors = require("./comm_functors")
 const Container = Functors.Container
 const Maybe = Functors.Maybe
+const IO = Functors.IO
 const chain = Functors.chain
 const Task = require("folktale").concurrency.task
 
@@ -29,6 +30,7 @@ console.log(`twoAdd3: ${twoAdd3.__value}`)
 
 // 两个 Container 的值相加引出了 ap 函子
 // ap 函子是对两个 Functor 中的值取出,应用相应的变化,然后再封装进入 Functor 中的做法
+// ap 函子的定义是在 other_functor.map(this.__value) => 使用传入的 functor map 当前 functor 中的 __value 值
 
 // _r.ap ramda 的 ap 为先向原始数组 *2 生成的元素添加进入数组 再将原始数组 +3 生成的元素填入数组
 console.log(`r.ap: ${_r.ap([_r.multiply(2), _r.add(3)], [1,2,3])}`)
@@ -93,13 +95,55 @@ var liftA3 = _r.curry(function (f,functor1,functor2,functor3){
 })
 
 // 使用 liftA2 实现了 ap 函子两个方法
-console.log(`liftA2 Add :${liftA2(_r.add)(Maybe.of(2))(Maybe.of(3)).__value}`)
+console.log(`liftA2 Curry Add :${liftA2(_r.add)(Maybe.of(2))(Maybe.of(3)).__value}`)
+console.log(`liftA2 Normal Add :${liftA2(_r.add,Maybe.of(2),Maybe.of(3)).__value}`)
 
-//TODO:// 函数式编程中 applicative functor 中提到的免费开瓶器的概念无法理解
+// 函数式编程指北中的 !!!免费开瓶器!!!
+// 强调的是数学的衍生概念 (通过公里推演,概念推演 得出其他新的概念)
+// 符合数学的概念,但是有些许的绕路的感觉
+
+// of/ap 衍生出 map
+// 先把f 封装进入新的 functor 然后 ap 自己 => ap 使用 other_container(this).map 自己 即 f
+// X.prototype.map = function (f){
+//     return this.constructor.of(f).ap(this)
+// }
+
+// chain 衍生出 map
+
+//chain 先map 后 join => of 包装了一层 Functor 应用了 f 函数和 a 的值
+// X.prototype.map = function (f){
+//     var m = this;
+//     return m.chain(function (a){
+//         return m.constructor.of(f(a));
+//     })
+// }
+
+// chain/map 衍生出 ap
+
+// chain 只是为了获得 当前 functor的值
+// X.prototype.ap = function (other) {
+//     return this.chain(function (f) {
+//         return other.map(f)
+//     })
+// }
 
 // 定律
 
 // var tofM = _r.compose(Container.of,Maybe.of)
 // var tofmLiftA2 = liftA2(_r.concat,tofM("First Element"),tofM("Second Element"))
 // console.log(`tofmLiftA2: ${tofmLiftA2}`)
+
+// ap 函子定律
+// 1. ap 函子是组合关闭的,即:ap 的是什么类型的容器,ap 之后依旧是什么类型的容器
+// 2. TODO:// 对比 monad 单子 chain 为什么说 monad 单子可以改变容器类型?
+
+
+// TO
+
+var u = IO.of(_r.toUpper);
+var v = IO.of(_r.concat("& beyond"));
+var w = IO.of("blood bath ");
+
+console.log(`compose ap u v w: ${IO.of(_r.compose).ap(u).ap(v).ap(w).__value()("")}`)
+console.log(`ap ap ap u v w: ${u.ap(v.ap(w)).__value()("123")}`)
 

@@ -108,6 +108,10 @@ IO.prototype.join = function () {
     return this.__value
 }
 
+IO.prototype.ap = function (other_functor){
+    return other_functor.map(this.__value)
+}
+
 let chain = _r.curry(function(f, m){
     return m.map(f).join(); // 或者 compose(join, map(f))(m)
 });
