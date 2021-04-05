@@ -19,5 +19,5 @@ console.log(upperCaseA)
 
 console.log(Date(Date.now()))
 
-// M
+// Math 全局对象
 // Math console.log(Math)
