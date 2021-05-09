@@ -13,7 +13,7 @@
     "graphql": "^14.5.8",
     "immutable": "^4.0.0-rc.12",
     "jquery": "^3.5.1",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "node-localstorage": "^2.1.6",
     "prop-types": "^15.6.1",
