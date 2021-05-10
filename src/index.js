@@ -2,11 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import './otherComponent.js'
-import {Greeting, MixInComponent} from './es5React.js'
 import './flowTest'
 import PropTypes from "prop-types"
-import {ExternalCompositeComponent, DefaultComponent} from "./otherComponent";
-import {add} from "./flowTest"
+import {ExternalCompositeComponent} from "./otherComponent";
+import VideoPlay from "./video_play/VideoPlay";
+import XGPlayer from "./video_play/XGPlayer";
 
 
 //普通类型定义的组件
@@ -118,29 +118,29 @@ class Game extends React.Component {
     constructor() {
         super();
         this.state = {
-            history: [
+            history   : [
                 {
                     squares: Array(9).fill(null),
                 }
             ],
             stepNumber: 0,
-            xIsNext: true
+            xIsNext   : true
         }
     }
 
     handleClick(i) {
-        var history = this.state.history.slice(0, this.state.stepNumber + 1);
-        var current = history[history.length - 1];
+        var history   = this.state.history.slice(0, this.state.stepNumber + 1);
+        var current   = history[history.length - 1];
         const squares = current.squares.slice();
         if (caculatorWinner(squares) || squares[i]) {
             return;
         }
-        squares[i] = this.state.XisNext ? "X" : "O";
-        var xisNext = !this.state.XisNext;
+        squares[i]     = this.state.XisNext ? "X" : "O";
+        var xisNext    = !this.state.XisNext;
         var stepNumber = ++this.state.stepNumber;
         this.setState({
-            history: history.concat([{squares: squares}]),
-            XisNext: xisNext,
+            history   : history.concat([{squares: squares}]),
+            XisNext   : xisNext,
             stepNumber: stepNumber
         });
     }
@@ -148,7 +148,7 @@ class Game extends React.Component {
     jumpTo(stepNumber) {
         this.setState({
             stepNumber: stepNumber,
-            xisNext: (!(stepNumber % 2)),
+            xisNext   : (!(stepNumber % 2)),
         })
     }
 
@@ -158,11 +158,10 @@ class Game extends React.Component {
         var current = history[this.state.stepNumber];
         var squares = current.squares;
         let status;
-        let winner = caculatorWinner(squares);
+        let winner  = caculatorWinner(squares);
         if (winner) {
             status = `Winner is ${winner}`
-        }
-        else {
+        } else {
             status = `Next player: ${this.state.XisNext ? "X" : "O"}`;
         }
 
@@ -270,7 +269,7 @@ class Clock extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            time: new Date(),
+            time             : new Date(),
             notChangedInState: 'not changed state!'
         };
         this.times = 0;
@@ -305,8 +304,7 @@ class Clock extends React.Component {
     shouldComponentUpdate() {
         if (this.times % 2 === 0) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -348,7 +346,7 @@ function updateInterval() {
 class ToggleComponent extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.state       = {
             isToggleOn: false
         };
         this.handleClick = this.handleClick.bind(this);
@@ -417,8 +415,7 @@ function GuestGreeeting(props) {
 function Greenting(props) {
     if (props.isLogin) {
         return <UserGrenting/>
-    }
-    else {
+    } else {
         return <GuestGreeeting/>
     }
 }
@@ -435,8 +432,7 @@ class LoginContronl extends React.Component {
         let button;
         if (this.state.isLogin) {
             button = <LogOutButton onClick={this.handleLogoutClick.bind(this)}/>
-        }
-        else {
+        } else {
             button = <LoginButton onClick={this.handleLoginClick.bind(this)}/>
         }
         return (
@@ -486,8 +482,7 @@ class ReturnNullComponet extends React.Component {
     render() {
         if (this.props.isShowWarning) {
             return (<h1>Warning!</h1>);
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -586,8 +581,8 @@ class NormalFormComponent extends React.Component {
 class FormContronlComponent extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {value: ""}
-        this.handleChang = this.handleChang.bind(this);
+        this.state        = {value: ""}
+        this.handleChang  = this.handleChang.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -639,7 +634,7 @@ class SelectedComponent extends React.Component {
 class SelectedContronlComponent extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {selected: 'red'};
+        this.state          = {selected: 'red'};
         this.handleOnChange = this.handleOnChange.bind(this);
     }
 
@@ -753,7 +748,7 @@ function TypeCheckComponent(props) {
     </div>
 }
 
-TypeCheckComponent.propTypes = {
+TypeCheckComponent.propTypes    = {
     name: PropTypes.string
 };
 //prop-types 使用默认的值
@@ -769,7 +764,7 @@ class RefsComponent extends React.Component {
         // this.refs = React.createRefs(); //react 16.3.1 以上才可以使用
         //textInput 指向了子元素
         this.textInput = null;
-        this.setRef = (element) => {
+        this.setRef    = (element) => {
             this.textInput = element;
         };
 
@@ -959,14 +954,11 @@ class ParentLifeCycleComponent extends React.Component {
     render() {
         if (this.state.times % 3 === 0) {
             return <ComponentLifeCycle name="3% = 0"/>
-        }
-        else if (this.state.times % 3 === 1) {
+        } else if (this.state.times % 3 === 1) {
             return <ComponentLifeCycle name="3% = 1"/>
-        }
-        else if (this.state.times % 3 === 2) {
+        } else if (this.state.times % 3 === 2) {
             return <ComponentLifeCycleSecond name="3% = 2"/>
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -1126,8 +1118,7 @@ class ErrorBoundaryComponent extends React.Component {
     render() {
         if (this.state.hasError) {
             return <a>Some Thing Wrong!</a>
-        }
-        else {
+        } else {
             return <button onClick={() => {
                 this.setState({hasError: true})
             }}>throw error!</button>
@@ -1194,7 +1185,7 @@ LowComponent.staticMethod = function (message) {
     alert("hello:" + message);
 };
 
-const HighComponent = wrapLowComponent(LowComponent, "low low low！");
+const HighComponent       = wrapLowComponent(LowComponent, "low low low！");
 const HighComponentSecond = wrapLowComponent(LowComponent, "low second ,low second ,low second!");
 
 //Forwarding refs(向Component中的Component组件索取引用）
@@ -1212,7 +1203,7 @@ const ref = React.createRef();
 class MouseMove extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.state           = {
             x: 0,
             y: 0,
         };
@@ -1245,7 +1236,7 @@ class MouseMove extends React.Component {
                 <a>Current Position is {`x: ${this.state.x} y: ${this.state.y}`}</a>
                 {/*{this.props.render(this.state)}*/}
                 {/*内层的控件决定了其Children是否显示*/}
-                {this.props.children||<a>No Children</a>}
+                {this.props.children || <a>No Children</a>}
             </div>
         );
     }
@@ -1365,7 +1356,44 @@ class AppComposite extends React.Component {
     }
 }
 
+// 表单在 React 中既可以表示成受控组件/也能表示为非受控组件
+class FormComponent extends React.Component {
+
+
+    constructor(props) {
+        super(props);
+        this.state = {v:"v"}
+    }
+
+    render() {
+        return (
+            <div>
+                <form>
+                    <label>
+                        名字:
+                        <input type="text" name="name" />
+                    </label>
+                    <input type="submit" value="提交" />
+                </form>
+            </div>
+        );
+    }
+
+    onInput(e) {
+        console.log(`onInput:${e.target.value}`)
+        // this.setState({
+        //     v: e.target.value
+        // })
+    }
+
+    onChange(e){
+        console.log(`onChange:${e.target.value}`)
+    }
+
+
+}
+
 //组件的使用 需要放在组件声明的下面
-ReactDOM.render(<AppComposite/>, document.getElementById('root'));
+ReactDOM.render(<XGPlayer/>, document.getElementById('root'));
 
 
