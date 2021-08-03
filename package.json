@@ -1,7 +1,7 @@
 {
   "name": "my-app",
   "version": "0.1.0",
-  "type": "commonjs",
+  "type": "module",
   "private": true,
   "dependencies": {
     "axios": "^0.21.0",
@@ -22,13 +22,20 @@
     "react-dom": "^17.0.2",
     "react-scripts": "1.1.1",
     "xgplayer": "^2.20.3",
-    "xmlhttprequest": "^1.8.0"
+    "xmlhttprequest": "^1.8.0",
+    "antd-mobile": "^2.2.14"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "flow": "flow"
-  }
+    "flow": "flow",
+    "runNode": "node src/node.js",
+    "echo": "echo \"hello echo\"",
+    "ls": "ls -l",
+    "runCfg": "node SheBang.js"
+  },
+
+  "config" : { "port" : "8080" }
 }

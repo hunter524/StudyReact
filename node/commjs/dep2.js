@@ -10,6 +10,7 @@ function getBaidu(){
     });
 }
 // getBaidu();
+console.log("dep2 init")
 module.exports={
     getBaidu:getBaidu
 };

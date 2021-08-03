@@ -39,7 +39,6 @@ simpleParentFunction1()
 simpleParentFunction2()
 
 function functionLength1(a) {
-
 }
 
 function functionLength2(a, b) {
@@ -49,6 +48,7 @@ function functionLength2(a, b) {
 //Function.length 代码方法声明的参数的个数
 //arguments.length 代表方法的实际的参数的个数
 console.log("functionLength1", functionLength1.length, "functionLength2", functionLength2.length)
+functionLength1(1)
 
 // Rest Param
 // 在 arrow function 中不存在 arguments 参数,但是可以使用 Rest Param 获取参数
@@ -135,3 +135,61 @@ console.log(withOutDefaultParamSafe(5))
 let AsyncFunction = Object.getPrototypeOf(async function () {
 }).constructor
 console.log(typeof AsyncFunction)
+
+
+//  same as "slice" in the previous example
+const unboundSlice = Array.prototype.slice;
+const slice = Function.prototype.apply.bind(unboundSlice);
+
+// ...
+
+let boundSliceArray = slice([1,2,3,4]);
+console.log(boundSliceArray)
+
+function FunctionName() {
+
+}
+//bind 的 方法打印名称是 bound FunctionName (用于标记这个方法是 bound 结束之后的方法)
+console.log(FunctionName.name)
+console.log(FunctionName.bind({}).name)
+
+//引用 Function 对象自己只能使用 name 引用, this 指向的 function 绑定的环境 this.
+function functionThisIsNotFunction() {
+    console.log("function this ====>",this)
+    console.log(functionThisIsNotFunction.toString())
+}
+
+functionThisIsNotFunction()
+
+// GeneratorFunction
+function* generatorFunction() {
+    yield 1;
+    yield 2;
+    yield  3;
+}
+
+//generatorFunction 执行完毕之后返回的是一个 Iterator 的方法
+let gfun = generatorFunction();
+console.log("gfun type:",typeof gfun)
+
+console.log("gfun next:",gfun.next())
+console.log("gfun next:",gfun.next())
+console.log("gfun next:",gfun.next())
+
+//getter/setter function in Object
+
+//getter/setter 将一个属性与一个方法绑定
+let getterObj = {
+    get time(){
+       return Date.now()
+    }
+}
+console.log("getter Obj time getter:",getterObj.time)
+let setterObj = {
+    otherTime:"",
+    set time(time){
+        return this.otherTime = time
+    }
+}
+setterObj.time = Date.now();
+console.log("setterObj other time:",setterObj.otherTime)

@@ -18,7 +18,7 @@ function readDirAndFile() {
 // module.exports ={
 //         rw:readDirAndFile
 // };
-
-exports ={
+console.log("dep1 init")
+exports.ex ={
     rw:readDirAndFile
 };
