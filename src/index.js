@@ -8,7 +8,6 @@ import {ExternalCompositeComponent} from "./otherComponent";
 import VideoPlay from "./video_play/VideoPlay";
 import XGPlayer from "./video_play/XGPlayer";
 import SimpleContextComponent from "./react_again/SimpleContextComponent";
-import Index from "./font";
 
 
 //普通类型定义的组件
@@ -1396,6 +1395,6 @@ class FormComponent extends React.Component {
 }
 
 //组件的使用 需要放在组件声明的下面
-ReactDOM.render(<Index/>, document.getElementById('root'));
+ReactDOM.render(<CatchComponent/>, document.getElementById('root'));
 
 

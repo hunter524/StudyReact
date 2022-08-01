@@ -1,8 +1,8 @@
-function print() {
+export function print() {
     console.log("Es6Module2.js")
 }
 
-function print2(){
+export function print2(){
     console.log("Es6Module2.js")
 }
 

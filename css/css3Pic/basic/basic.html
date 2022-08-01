@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #first{
+            background-color: blue;
+        }
+        #second{
+            background-color: yellow;
+        }
+        #third{
+            background-color: green;
+        }
+        div div{
+            height: 20px;
+            width: 20px
+        }
+    </style>
+    <!--    css 只能通过 link 标签引入，无法通过 style 标签加 src 引入-->
+    <link rel="stylesheet" type="text/css" href="basic.css" >
+    <!-- js 可以通过 script 标签加 src 引入   -->
+    <script src="basic.js"></script>
+    <script>
+        console.log("load finish")
+    </script>
+</head>
+<body>
+<div>
+    <div id="first"></div>
+    <div id="second"></div>
+    <div id="third"></div>
+</div>
+</body>
+</html>
