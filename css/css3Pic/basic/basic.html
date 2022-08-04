@@ -17,6 +17,10 @@
             height: 20px;
             width: 20px
         }
+        a:target{
+            background-color: black;
+            color: purple;
+        }
     </style>
     <!--    css 只能通过 link 标签引入，无法通过 style 标签加 src 引入-->
     <link rel="stylesheet" type="text/css" href="basic.css" >
@@ -28,9 +32,9 @@
 </head>
 <body>
 <div>
-    <div id="first"></div>
-    <div id="second"></div>
-    <div id="third"></div>
+    <div id="first" ><h1><a href="#first">first</a></h1></div>
+    <div id="second"><a href="#second">second</a></div>
+    <div id="third"><a href="#third">third</a></div>
 </div>
 </body>
 </html>

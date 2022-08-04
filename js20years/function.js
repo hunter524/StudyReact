@@ -24,6 +24,10 @@ console.log(Date(Date.now()))
 
 //访问器属性（setter/getter）/数据属性
 
+//对于访问器属性，浏览器中还提供了非标准化的方法用于定义
+//__defineSetter__ ,__defineGetter__
+//标准化的定义方法时通过 defineProperty,defineProperties 定义 set/get 属性
+
 let a = {"a":"a"};
 
 //使用 defineProperty 定义的属性(访问器属性，数据属性)默认不可以枚举
@@ -54,7 +58,7 @@ for (let aKey in a) {
 
 console.log(Object.keys(a))
 
-//writeable 设置为 false 即 v2 属性不可以更改
+//writeable 设置为 false 即 v2 属性不可以更改j
 // defineProperty 时默认为 false
 a.v2 = "v222"
 Object.defineProperty(a,"v2",{
@@ -65,3 +69,11 @@ Object.defineProperty(a,"v2",{
 })
 // delete a.v2
 console.log(a.v2)
+
+//Object.seal(密封）
+//已有属性字段的 configurable 属性设置为 false,不可以删除已有属性
+//isExtensible 属性设置为 false 则不可以给已有对象扩展属性（添加新的属性）
+
+
+//Object.freeze(冻结)
+//基于 seal 的基础上，writeable 属性也设置为 false，即 值也不可以被修改
