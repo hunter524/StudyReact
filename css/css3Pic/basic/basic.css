@@ -2,3 +2,8 @@
     /*important 标签会覆盖 js 通过代码设置的属性*/
     background-color: red!important;
 }
+
+div a{
+    background-color: red;
+    font-size: 100px;
+}

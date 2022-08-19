@@ -52,7 +52,7 @@ div div.class
 
 [attribute="value"] <====> *[attribute="value"]
 
-### 伪类选择器/伪元素选择器/目标伪类选择器
+### 伪类选择器/目标伪类选择器
 
 - 动态伪类选择器: a:link a:visited a:hover a:active(点击时的效果) a:focus
 
@@ -113,6 +113,33 @@ UI 元素状态伪类选择器：a:checked a:enabled a:disabled
 input:not([type=submit]){
 
 }
+```
+
+not 选择器括号内的元素可以是其他选择器(属性选择器，伪类选择器，类选择器 等其他类型的选择器)
+
+复杂的伪类选择器可以结合元素选择器，类选择器，层次选择器进行使用如：
+
+```css
+.active div ~ div:nth-child(1){
+  backgroud-color:blue;
+}
+```
+
+### 伪元素选择器
+
+伪元素选择器以 :: 双冒号开头，用于和伪类选择器的 : 单冒号进行区分。
+
+- ::first-letter
+- ::first-line
+- ::after/::before
+  
+  在已经存在的元素的开头和结尾添加其他元素，如添加字体 ICON,或者 显示 href 的属性值
+
+  ```css
+  a[href^=http]::after{
+    content:"("attr(href)")"
+  }
+  ```
 
 ### 层次选择器
 

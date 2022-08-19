@@ -1,3 +1,4 @@
+//cmd file
 //依赖路径等的相关配置
 console.time("cmd main");
 seajs.config({

@@ -14,6 +14,7 @@
 
 const dep1   = require("./dep1");
 let dep2 = require("./dep2");
+dep1.ex.rw()
 console.log("I am main Module!");
 global.console.log("log from global.console.log!");
 
