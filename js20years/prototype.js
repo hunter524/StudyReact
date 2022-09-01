@@ -34,3 +34,24 @@ for (const cKey in c) {
 
 let regExp = /a/gi;
 console.log(regExp.test("aBc"));
+
+
+A.prototype = Object.prototype
+B.prototype = Object.prototype
+C.prototype = Object.prototype
+
+b = new B();
+console.log("b.a is:",b.a)
+c = new C()
+console.log("c.a is:",c.a)
+
+B.prototype = new A()
+C.prototype = new B()
+
+let b1 = new B()
+let c1 = new C()
+//给构造函数设置 prototype,不会影响设置之前通过该构造函数创建的对象
+console.log("after set prototype b1.a is:",b1.a)
+console.log("after set prototype c1.a is:",c1.a)
+console.log("b.a is:",b.a)
+console.log("c.a is:",c.a)
