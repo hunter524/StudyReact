@@ -14,6 +14,14 @@ Component 表示的使用频次最多的组件概念。
 
 表示组件内部的元素概念，元素的类型既可以是 Host 相关的类型（div,RN 的宿主视图），也可以是组件类型(如果是组件类型，则通常需要递归继续向下解析，直到完全解析成为 Host 类型,形成 Host类型视图树)。
 
+ReactElemt 其实 JSX 在源码层面的一种表示。eg:
+
+```js
+ReactDOM.render(<Component />, container);
+```
+
+其中的 Component表示并不是组件，而是 JSX 会被翻译成为 ReactElement 传递。ReactElement#type 字段才表示的是 Component 组件。
+
 ### react-dom
 
 对外分别暴露向浏览器渲染的 API 和 SSR 直接返回渲染的 Dom 字符串的 API
@@ -51,3 +59,15 @@ react 核心的 API 和 协调器只负责组件状态的管理和更新调度�
 - ReactNative.js
   
   ReactNativeDefaultInjection 向 react 核心组件注入其原生平台相关的渲染方法。
+
+## 内部源码结构树
+
+### ReactDom.js
+
+#### ReactMount
+
+- instantiateReactComponent.js
+  
+  - ReactCompositeComponent
+  - ReactEmptyComponent
+  - ReactHostComponent
