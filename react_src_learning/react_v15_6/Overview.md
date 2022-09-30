@@ -10,11 +10,13 @@ react 的核心 API.eg:React.Component,React.createElement.
 
 Component 表示的使用频次最多的组件概念(通常用户继承该类编写自己的组件，需要与 React 内部源码使用的 DomComponent 和 CompositeComponent 进行区分)。
 
+可以直接在 Component 类上声明 defaultProps、propTypes 分别用于标记用户组件的默认属性和属性对应的类型。**声明在类上，不是声明在实例的属性上**
+
 ./react/src/isomorphic/classic/element/ReactElement.js
 
 表示组件内部的元素概念，元素的类型既可以是 Host 相关的类型（div,RN 的宿主视图），也可以是组件类型(如果是组件类型，则通常需要递归继续向下解析，直到完全解析成为 Host 类型,形成 Host类型视图树)。
 
-(User)Component#render 返回的即为 ReactElement（只表示最外层的组件的类型，外层组件内部的子元素则通过 props.children 存在 ReactElement 中，并且传递给最外层的组件）。
+(User)Component#render 返回的即为 ReactElement（只表示最外层的组件的类型，外层组件内部的子元素则通过 props.children 存在 ReactElement 中，并且传递给最外层的组件），(User)Componet根据自己的需求，在 render 方法中决定是否返回传递给其的 Children 元素列表。
 
 ReactElemt 其实 JSX 在源码层面的一种表示。eg:
 
@@ -66,13 +68,15 @@ ReactDOM.render((
 ```
 
 type:表示当前JSX 组件的类型，div 等Host组件，App 等用户定义组件
-props:用户定义在该组件上的属性。
 key:内置属性，用于复用
 ref:内置属性，用于搭配 React#createRef 使用，获取其内部子组件的引用。
+props:用户定义在该组件上的属性。
 props.children:表示当前 ReactElement 所表示的子组件
 
 *对于用户定义的组件其 children 组件不一定会被全部(部分)渲染出来，但是对于 Host 组件其 children 组件通常会被添加到 DOM 的 Node 节点，从而被渲染出来。*
 上述的论述对于理解下面的 ReactDOMCoponent
+
+_owner: 表示当前 ReactElement 是被谁（ReactDomComponent,ReactCompositeComponent）的render 创造出来
 
 私有属性:
 
@@ -149,7 +153,7 @@ react 核心的 API 和 协调器只负责组件状态的管理和更新调度�
 
 ## 内部源码结构树
 
-### ReactDom.js
+### ReactDom
 
 #### ReactMount
 
@@ -158,3 +162,156 @@ react 核心的 API 和 协调器只负责组件状态的管理和更新调度�
   - ReactCompositeComponent
   - ReactEmptyComponent
   - ReactHostComponent
+
+## 源码文件及职责
+
+### React.js
+
+- Children
+  
+  - map
+
+    递归对于对象执行 map 操作。
+
+  - forEach
+
+    递归对于对象执行 forEach 操作。
+
+  - count
+
+    递归对于 children 进行计数操作
+
+  - toArray
+
+    递归对于 children 向数组进行放入和摊平操作。
+
+  - only
+
+    判断 children 是否是一个 ReacElement 而不是一个 Element 数组。
+  
+对于 ./src/isomorphic/children/ReactChildren.js 中的方法的导出，便于对于 ReactElement 中 props.children 属性的操作. map,forEach,cout,toArray 均执行 flat 摊平操作，即如果 children 的元素是 array 则继续向下进行递归操作。
+
+- Component
+  
+  ReactBaseClasses React(User)Componet 相关 Api 的对外导出。React 使用者通常是继承该类编写 Class Component.其在原型上提供 setState,isReactComponent 等方法该使用者进行使用。
+
+  ./src/isomorphic/modern/class/ReactBaseClasses.js 对外导出的类
+
+  - isReactComoponent
+
+    判断组件是否是 (User) Component 组件
+
+  - setState
+
+    用户更新组件状态，从而触发组件更新
+
+  - forceUpdate
+
+    强制更新组件，无视组件状态的更新
+
+- PureComponet
+  
+  无状态组件的表示。通常只表示该组件只负责渲染并无自身的内部状态。
+
+  ./src/isomorphic/modern/class/ReactBaseClasses.js 对外导出的类
+
+- createElement
+  
+  ./src/isomorphic/classic/element/ReactElement.js 对外导出的方法
+
+  通过 type,config,children 创建一个 ReactElement 对象。
+
+- cloneElement
+
+  通过 element,config,children 复制一个新的 Element。
+
+  config 中传递的属性会覆盖 element 中原有的旧属性。如果 config 中有 属性名称，但是值为空则 使用 Component#defaultProps 存在的属性进行覆盖。
+
+  ./src/isomorphic/classic/element/ReactElement.js 对外导出的方法
+
+- isValidElement
+
+  ./src/isomorphic/classic/element/ReactElement.js 对外导出的方法
+
+- PropTypes
+  
+  用于做类型校验。在 React 已经标记为 deprecated 将在 React 16 中移除该属性。
+
+  推荐使用者后续自行导入 prop-types 最新组件使用。
+
+  ./src/isomorphic/classic/types/ReactPropTypes.js 对外导出的方法
+
+- createClass
+
+  暴露给外部，通过 Spec 对象，创建一个(User)Component
+
+  是对于内部模块 ./src/isomorphic/classic/class/createClass.js 和模块 create-react-class 的导出。
+
+- createFactory
+
+  对于 createElement 绑定 type 后返回的方法，并且在该方法上添加 type 属性，用于标记该 ReactElement 工厂方法和什么 type 类型关联。
+
+  ./src/isomorphic/classic/element/ReactElement.js 对外导出的方法
+
+- createMixin
+- DOM
+- version
+
+### ReactDom.js
+
+- findDOMNode
+- render
+- unmountComponentAtNode
+- version
+- unstable_batchedUpdates
+- unstable_renderSubtreeIntoContainer
+
+### PooledClass.js
+
+对象池化技术，提升 JS 中对象复用的执行效率。文件路径：./src/shared/utils/PooledClass.js
+
+### ReactNoopUpdateQueue.js
+
+默认的无行为的 DOM 更新队列。并且对于默认的 enqueueSetState,enqueueForceUpdate 等方法打印 warning 日志，提醒用户该种行为无法更新 Component 视图进入 Dom 视图树。
+
+文件路径： ./src/isomorphic/modern/class/ReactNoopUpdateQueue.js
+
+### ReactCurrentOwner.js
+
+通过 current 持有当前已经构建的即将被进行渲染等操作的 ReactElement 对象.
+
+文件路径：/home/hunter/WebstormProjects/react/src/isomorphic/classic/element/ReactCurrentOwner.js
+
+### waning.js
+
+fbjs 内部提供的工具组件，用于打印 warning 日志使用。
+
+### ReactElementSymbol.js
+
+ReactElement.$$typeof 标记所指向的常量，用于标记该对象是 ReactElement 类型。
+
+内部使用的值为 REACT_ELEMENT_TYPE,如果 js 引擎支持 ES6 Symbol 则使用 key 值为 "react.element" 的 Symbol 作为该变量的值。如果不支持 Symbol 则使用 Magic Number 0xeac7 作为该常量的值。
+
+### ReactElement.js
+
+ReactElement 为该文件模块向外导出的构造函数，但是不建议使用 new 关键字构造该对象，用于创建 ReactElement 对象。
+
+该对象具有 type,key,ref,props,props.children,_owner(标记当前 ReactElement 是由哪个 ReactDomComponent,ReactCompositeComponent 创建的),$$typeof(值为 ReactElementSymbol 内部的标记常量，用于区分和识别当前对象的类型为 ReactElement 对象类型)
+
+创建的 ReactElement 对象是被 freeze 的(如果是测试环境，正式环境不会执行该操作)，无法修改属性值，添加，删除新的属性。
+
+key,ref,__self,__source 为 ReactElement的保留属性，无法被用户使用的属性。
+
+Component 类上定义的 defaultProps,也是在模块中的 createElement 方法中进行处理的(用户传递的属性不存在，则使用该默认属性)
+
+### ReactPropTypes.js
+
+在 React 15 即之前导出为 React.PropTypes 变量
+
+prop-types 组件在 React 中的使用，目前已经已经被标记为 deprecated ,将在 16 版本中移除。
+
+基于 prop-types 添加了是否是 ReactElement 的判断。isValidElement.
+
+用于定义在 Component 类上的 propTypes 类型标记，进行类型检测的方法。
+
+内部的校验方法，return null 表示正常校验通过
