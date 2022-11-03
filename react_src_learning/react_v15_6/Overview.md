@@ -8,15 +8,17 @@
 
 react 的核心 API.eg:React.Component,React.createElement.
 
-Component 表示的使用频次最多的组件概念(通常用户继承该类编写自己的组件，需要与 React 内部源码使用的 DomComponent 和 CompositeComponent 进行区分)。
+(User)Component 表示的使用频次最多的组件概念(通常用户继承该类编写自己的组件，需要与 React 内部源码使用的 ReactDOMComponent 和 ReactCompositeComponent 进行区分)。
 
 可以直接在 Component 类上声明 defaultProps、propTypes 分别用于标记用户组件的默认属性和属性对应的类型。**声明在类上，不是声明在实例的属性上**
+
+*getChildContext* 定义在用户组件实例上的方法，用于构造其子组件时，传递给子组件的 Context.*Context 的使用在后续的 React版本中存在更改*
 
 ./react/src/isomorphic/classic/element/ReactElement.js
 
 表示组件内部的元素概念，元素的类型既可以是 Host 相关的类型（div,RN 的宿主视图），也可以是组件类型(如果是组件类型，则通常需要递归继续向下解析，直到完全解析成为 Host 类型,形成 Host类型视图树)。
 
-(User)Component#render 返回的即为 ReactElement（只表示最外层的组件的类型，外层组件内部的子元素则通过 props.children 存在 ReactElement 中，并且传递给最外层的组件），(User)Componet根据自己的需求，在 render 方法中决定是否返回传递给其的 Children 元素列表。
+(User)Component#render 返回的即为 ReactElement（其中 type 只表示最外层的组件的类型，外层组件内部的子(组件)元素则通过 props.children 存在 ReactElement 中，并且传递给 render 返回的最外层的 (User)Component 组件），(User)Componet根据自己的需求，在 render 方法中决定是否返回传递给其的 Children 元素列表。
 
 ReactElemt 其实 JSX 在源码层面的一种表示。eg:
 
@@ -37,7 +39,9 @@ ReactDOM.render((
 
 - ReactCompositeComponent 则不需要负责自己的（User）Component 的子元素的渲染（因为传递给其的 children 子组件，其未必会全部(部分)渲染出来，完全依赖于该 ReactCompositeComponent 表示的(User)Component的 render 方法对于传入的 props.children 的处理）
 
-- ReactCompositeComponent 内部的 Component#render 返回的组件可能是 Host 组件也可能是 Composite 组件。均需要向下调用 mount 得到最终被用于渲染的 Host 树结构。如果是 Host 组件，则要构建 Host 组件树，并且向下调用得到其他 Composite 组件的 Component#render 的组件结构直到得到全部 Host 组件树为止。
+- ReactCompositeComponent 内部的 ReactElemet#type 构建的实例的 （User）Component#render 返回的组件可能是 Host 组件也可能是 Composite 组件。均需要向下调用 mountComponent 完成组件的递归向下加载，最终得到最终被用于渲染的 Host 树结构。如果是 Host 组件，则要构建 Host 组件树，并且向下调用得到其他 Composite 组件的 (User)Component#render 的组件结构直到得到全部 Host 组件树为止。
+
+- ReactDom#render 直接传入 ReactElement 构建 ReactDomComponent/ReactCompositeComponent.作为根 ReactElement ,被包装进入 TopLevelWrapper 系统定义的 （User）Component 组件，创建一个新的 ReactElement 然后使用该 Element 实例化获得 ReactCompositeComponent
 
 ### react-dom
 
@@ -53,6 +57,8 @@ ReactDOM.render((
 
 (User)Component#render 返回的对象,JSX 在代码层面的表示。
 
+*TODO:// render 中的条件渲染是在何时处理的？在编译前就已经处理好了？*
+
 形如:
 
 ```js
@@ -67,32 +73,73 @@ ReactDOM.render((
 
 ```
 
-type:表示当前JSX 组件的类型，div 等Host组件，App 等用户定义组件
+type:表示当前JSX 组件的类型，div 等Host组件，App 等用户定义组件。type 如果是 (User) Component 则是用户声明和定义的构造函数和类。
 key:内置属性，用于复用
 ref:内置属性，用于搭配 React#createRef 使用，获取其内部子组件的引用。
 props:用户定义在该组件上的属性。
 props.children:表示当前 ReactElement 所表示的子组件
 
 *对于用户定义的组件其 children 组件不一定会被全部(部分)渲染出来，但是对于 Host 组件其 children 组件通常会被添加到 DOM 的 Node 节点，从而被渲染出来。*
-上述的论述对于理解下面的 ReactDOMCoponent
+上述的论述对于理解下面的 ReactDOMComponent
 
-_owner: 表示当前 ReactElement 是被谁（ReactDomComponent,ReactCompositeComponent）的render 创造出来
+_owner: 表示当前 ReactElement 是被谁（User）Component 的render 创造出来(TODO://_owner 在什么地方被赋值的？)
 
 私有属性:
 
-($$typeof): REACT_ELEMENT_TYPE 标记当前对象是一个 ReactElement对象
+($$typeof): REACT_ELEMENT_TYPE 标记当前对象是一个 ReactElement对象,而不是其他普通对象
 
-Type(UserComponent)#defaultProps: 用户对于当前组件定义的属性的默认值
+Type(User)Component)#defaultProps: 用户对于当前组件定义的属性的默认值
+Type(User)Component)#propTypes: 表示 props 对应的字段的数据的类型。使用 PropTypes 的类型库作为类型表达方式。
 
 ### ReactDOMComponent/ReactCompositeComponent
 
-ReactDOMComponent/ReactCompositeComponent 持有 ReactElement ,被 React 内部用于标记 (User)Component 及其实例(通过 ReactElement 获得 (User)Component,实例化该 （User）Component,并持有该实例，并且调用 该实例的 render 方法，获得子 ReactElement 并创建 ReactDOMComponent/ReactCompositeComponent 然后递归向下调用，直到获取到整个 Host(DOM) 树结构，添加 Document 的 Container 节点上。
+ReactDOMComponent/ReactCompositeComponent 均持有 ReactElement
+
+ReactDOMComponent/ReactCompositeComponent 的核心均是围绕其持有的 ReactElement 作为核心展开。
+
+通过 ReactElement#type 构建 (User) Component 实例并且持有实例
+
+通过 ReactDOMComponent#mountComponent,ReactCompositeComponent#mountComponent 向下递归组件实例，最终得到待渲染的 markUp（Dom）标记，渲染加载到 Dom 树上。
+
+在 mountComponent 加载当前组件的过程中，也会调用(performInitialMount),从而调用当前 (User)Component#render 得到下层组件的 ReactElement 并且构建 ReactDOMComponent/ReactCompositeComponent
+
+然后递归向下调用 mountComponent 直到返回 markup(Dom) 标记结束为止。（结束递归的标志是直到叶子节点返回的均为 ReactDOMComponent 为止）
+
+ReactMount.js 中 TopLevelWrapper（实际为系统定义的 （User）Component 类型） 类，则是为了保证最外层 ReactDom#render 直接传递 ReactElement 和 （User）Component 通过 render 得到 ReactElement 的统一。
 
 ReactDOMComponent/ReactCompositeComponent 最终需要解析为 ReactDOMComponent 然后解析为 Document#Element 再挂载到 Dom 树上。
 
 通用内部属性：
 
 - _currentElement：当前 (Inner)Component 的 ReactElement实例
+- _compositeType:枚举常量，标记当前的 (User) Component 类型:
+
+```js
+var CompositeTypes = {
+  ImpureClass: 0,//React.Component 普通复杂 Component (使用最多)
+  PureClass: 1, //React.PureComponent 单纯组件，State，Props 只做浅比较，对于性能具有较大的提升
+  StatelessFunctional: 2,// 函数式组件
+};
+```
+
+- _renderedNodeType
+
+  标记当前 (Inner)Component 持有的 (User) Commpont#render 返回的 ReactElement 的节点类型。
+
+```js
+var ReactNodeTypes = {
+  HOST: 0,
+  COMPOSITE: 1,
+  EMPTY: 2,
+}
+```
+
+分为 Host，Composite，Empty 三种类型。
+
+- _renderedComponent
+  
+  当前(Inner)Component 持有的 ReactElement#type 的 (User) Commpont#render 返回的 ReactElement 构建的 （Inner)Component
+
 - _hostParent:当前 (Inner)Component 的父组件,也为 （Inner)Component 类型
 - _hostContainerInfo :为 ReactDOMContainerInfo 类型，同时持有 TopLevelWrapper 和 Node 节点类型.(*无论哪一层的 （Inner）Component均持有的是 ReactDom#render 所封装和提供的 TopLevelWrapper 和 Node根节点容器*)
 
@@ -103,6 +150,7 @@ ReactDOMComponent.prototype 会被 Mixin 两个类：ReactDOMComponent.Mixin，R
 element 类型如果是 Host 类型则会被包装成为 ReactDOMComponent
 
 - _tag: 当前Host 组件的 tag 标记类型，如 div,p 等 Dom 元素
+- _hostNode:当前的 ReactDomComponent(如果是渲染的根组件)，所依赖的容器。(组合类型组件不能直接挂载到 DOM 树上，因此没有该属性标记)
 - _renderedChildren: 需要渲染的子组件 (Inner)Component
 
 this._createInitialChildren(根据 props.children 递归向 mount 子元素) -> this.mountChildren
@@ -163,6 +211,10 @@ react 核心的 API 和 协调器只负责组件状态的管理和更新调度�
   - ReactEmptyComponent
   - ReactHostComponent
 
+- TopLevelWrapper
+
+  用于包装 ReactDom#render 传递的渲染在顶层的 ReactElement. TopLevelWrapper 在本质上是一种包装用户的 ReactElement 的一种顶层的特殊的 ReactElement.
+
 ## 源码文件及职责
 
 ### React.js
@@ -211,7 +263,9 @@ react 核心的 API 和 协调器只负责组件状态的管理和更新调度�
 
 - PureComponet
   
-  无状态组件的表示。通常只表示该组件只负责渲染并无自身的内部状态。
+  单纯组件，只对 Props 和 State 进行浅层比较.(即 Props,State 对象不相等时执行渲染，不会比较对象内部的值)
+
+  因此在渲染性能上有很大的提升，要求用户自己需要直到 Props,State 内部的深层次不同，进行手动调用 forceUpdate 进行渲染。
 
   ./src/isomorphic/modern/class/ReactBaseClasses.js 对外导出的类
 
@@ -235,7 +289,7 @@ react 核心的 API 和 协调器只负责组件状态的管理和更新调度�
 
 - PropTypes
   
-  用于做类型校验。在 React 已经标记为 deprecated 将在 React 16 中移除该属性。
+  用于做类型校验。*在 React 已经标记为 deprecated 将在 React 16 中移除该属性。*
 
   推荐使用者后续自行导入 prop-types 最新组件使用。
 
@@ -243,9 +297,9 @@ react 核心的 API 和 协调器只负责组件状态的管理和更新调度�
 
 - createClass
 
-  暴露给外部，通过 Spec 对象，创建一个(User)Component
+  暴露给外部，通过 Spec 对象，创建一个(User)Component。Spec 为一个普通对象，但是其按照 (User)Component 的规格定义了该对象属性，如 render 方法，componentDidUpdate 方法等模板方法。
 
-  是对于内部模块 ./src/isomorphic/classic/class/createClass.js 和模块 create-react-class 的导出。
+  是对于内部模块 ./src/isomorphic/classic/class/createClass.js 和 模块 create-react-class 的导出。
 
 - createFactory
 
@@ -254,8 +308,18 @@ react 核心的 API 和 协调器只负责组件状态的管理和更新调度�
   ./src/isomorphic/classic/element/ReactElement.js 对外导出的方法
 
 - createMixin
+
+  创建混入，*已经在 react 15.6 中标记为移除，将在 react 16 被移除。*
+
 - DOM
+
+  对于 ./src/addons/ReactDOMFactories.js 中方法的导出，用于创建 HTML tag 类型的 ReactElement的工厂方法。
+
+  *在 react 15.6 中也被标记为 deprecated，将在 react 16 中移除，且建议迁移到 react-dom-factories 包*
+
 - version
+
+  用于标记 当前 React 的版本。
 
 ### ReactDom.js
 
@@ -315,3 +379,127 @@ prop-types 组件在 React 中的使用，目前已经已经被标记为 depreca
 用于定义在 Component 类上的 propTypes 类型标记，进行类型检测的方法。
 
 内部的校验方法，return null 表示正常校验通过
+
+除基础类型以外的常用类型:
+
+- arrayof
+  
+  传递一个类型检测器方法，返回一个该类型的检测方法。
+
+  对象类型的指定字段需要为数组，且数组的每个元素均需要符合类型检测方法的检测。
+
+- element
+  
+  判断对象的指定属性值是否为 ReactElement 类型。
+
+- instanceOf
+  
+  传递一个类型如: Array ,返回该类型的检测方法。
+
+- node
+  
+  判断元素是否为 string,boolean,number,undefined,null,ReactElement. 如果元素是 Array 或者可迭代类型，则判断其容器内部每个元素的类型是否为 string,boolean,number,undefinded,null,ReactElement 类型。这六种类型即被认为是其所述的节点类型，因为其不会在包含子属性。
+
+- objectOf
+  
+  传递类型检测方法，返回一个判断指定对象的指定属性的值中的每个值是否符合该方法的检测。
+
+- oneOf
+  
+  传递一个值数组，返回一个判断指定对象的指定属性值是否是数组其中的一个。
+
+- oneOfType
+  
+  同上，只不过传递的是类型检测方法数组。用于检测指定对象的指定属性值是否为指定类型。
+
+- shape
+  
+  传递 key:检测方法对象。对对象的指定 key 的值采用指定的方法进行检测。
+
+### createClass.js
+
+在 React.js 中暴露为 createClass 方法，通过 Spec 创建 (User) Compoent 类。
+
+*在 React 15.6 中已经标记为 deprecated 将在 16 中移除该属性。*
+
+在 npm 中暴露的模块名称为 create-react-class
+
+文件路径为：./src/isomorphic/classic/class/createClass.js
+
+其 Spec 规格对象定义的属性名称和含义如下：
+
+- mixins
+  
+  待 mixIn 组件对象实例 的 对象数组.(mixin 为多个对象组成的数组)
+
+- statics
+  
+  待 mixIn 组件类上的对象(只能是一个对象及定义在其上的方法)。
+
+- propTypes
+  
+  props 属性对应的字段的类型信息。
+
+  定义在类上的属性
+
+- contetxTypes
+  
+  当前 Component 被传入的 context 中对应的字段的类型信息。
+
+  定义在类上的属性
+
+- childContextTypes
+  
+  定义当前组件设置给其子组件的 context 内部的对应字段的类型信息。
+
+  定义在类上的属性
+
+- getDefaultProps
+  
+  返回默认属性对象的方法，在组件初始化的时候调用。
+
+  定义在类上的属性方法。
+
+- getInitialState
+  
+  返回组件初始状态对象的方法。
+
+- getChildContext
+  
+  返回当前组件传递给子组件的 context 对象。
+
+- render
+  
+  返回 ReactElement 渲染组件的方法。*因为调用时机和调用频率不定，因此该函数不能有副作用*
+
+- componentWillMount
+- componentDidMount
+- componentWillReceiveProps
+  
+  父组件更新传递给子组件的 props,context 时，先调用子组件该方法，告知子组件的 nextProps,nextContext
+
+  在该方法中，用户可以根据 当前 this.props 和 next.props 修改当前组件的状态。
+
+  反之在 componentWillReceiveState 中在无法修改 props 的状态，因为组件自己无法修改自己的 props 属性。
+
+- shouldComponentUpdate
+
+  传递给该方法 nextProps,nextState,nextContext 让子组件判断是否需要更新视图（*即 render 方法是否需要被调用*）
+
+  *无论返回 true/false,组件的 props,state,context 均会被更新成为新值*
+
+- componentWillUpdate
+  
+  传递给该方法 nextProps,nextState,nextContext,ReactReconcileTransaction，标记该组件将要被更新
+
+- componentDidUpdate
+  
+  传递给该方法的参数为 prevPops,prevState,prevContext,rootNode(当前组件在 DOM 树上所表示的 DOMElement)
+
+- componentWillUnmount
+  
+  表示组件将要被卸载，通常与 componentWillMount 配对使用，前者作为组件加载时的资源初始化，后者作为组件卸载时的资源清理操作。
+
+- updateComponent
+  
+  高级方法，客户端接管通常由 React Renderer（渲染器）和 reconciliation（协调器）执行的操作。 获得的参数为 ReactReconcileTransaction。

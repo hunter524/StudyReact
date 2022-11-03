@@ -31,7 +31,11 @@ react 15 之前只有两大结构，react 16 引入第三个结构
 
 ### Renderer
 
+渲染器分为三大类：Dom（浏览器），native(RN), Server(服务端渲染直接渲染成为字符串,返回给客户端)
+
 ### Scheduler
+
+React 16 增加了调度器用于调度渲染流程
 
 ## 外部API
 

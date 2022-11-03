@@ -10,13 +10,19 @@
 
 - typeof/Object.prototype.toString/instanceOf 的区别
   
-  typeof: 返回 object(Array,Regexp...),function,number,boolean,string(Date)
+  typeof: 返回 object(Array,Regexp...),function,number,boolean,string(Date),undefined
 
-  instanceOf:TODO://内部逻辑待定
+  instanceOf:推测与原型链和构造函数有关。TODO://内部逻辑待定
 
   Object.prototype.toString:返回诸如: [object Function] 字符串用于区分 Object 的子类型如 Array,Regexp.
 
 - NaN 的特殊性
   
   NaN !== NaN,且为 falsy 值
+
+- falsy 的六个值
+  
+  false,0,'',null,undefined,NaN.
+
+  所谓的 falsy 即通过 Boolean(值) 得到的对象的值为 false.
   
