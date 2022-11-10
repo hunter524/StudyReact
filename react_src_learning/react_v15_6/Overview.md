@@ -2,7 +2,7 @@
 
 ## 外部API
 
-### react
+### react(core 模块，对外暴露的核心 API)
 
 ./react/src/isomorphic/React.js
 
@@ -43,7 +43,7 @@ ReactDOM.render((
 
 - ReactDom#render 直接传入 ReactElement 构建 ReactDomComponent/ReactCompositeComponent.作为根 ReactElement ,被包装进入 TopLevelWrapper 系统定义的 （User）Component 组件，创建一个新的 ReactElement 然后使用该 Element 实例化获得 ReactCompositeComponent
 
-### react-dom
+### react-dom (rendered 模块，用于向 DOM 树进行渲染)
 
 对外分别暴露向浏览器渲染的 API 和 SSR 直接返回渲染的 Dom 字符串的 API
 
@@ -51,7 +51,18 @@ ReactDOM.render((
 
 ./react/src/renderers/dom/ReactDOMServer.js SSR 使用，直接返回渲染完成 html 文本
 
+如果是向客户端渲染则使用的是:
+
+/home/hunter/WebstormProjects/react/src/renderers/native/ReactNative.js 中的 ReactNative#render 向客户端组件进行渲染。
+
+如果是测试 React 的渲染器是否符合预期，渲染成为 json 则使用:
+
+/home/hunter/WebstormProjects/react/src/renderers/testing/ReactTestRenderer.js 的 ReactTestRenderer#create 进行渲染成为 JSON 数据结构。
+
 ## 内部API
+
+### ReactUpdates（reconciler 协调器模块，用于利用 core 协调 render 执行渲染操作）
+
 
 ### ReactElement
 
@@ -106,13 +117,19 @@ ReactDOMComponent/ReactCompositeComponent 的核心均是围绕其持有的 Reac
 然后递归向下调用 mountComponent 直到返回 markup(Dom) 标记结束为止。（结束递归的标志是直到叶子节点返回的均为 ReactDOMComponent 为止）
 
 ReactMount.js 中 TopLevelWrapper（实际为系统定义的 （User）Component 类型） 类，则是为了保证最外层 ReactDom#render 直接传递 ReactElement 和 （User）Component 通过 render 得到 ReactElement 的统一。
+(ReactDom#render 第一次渲染的为 ReactElement#type 为 TopLevelWrapper 类型，其 render 返回的 Element 为 ReactDom#render 传入的用户类型的 Element。)
+
+(TopLevelWrapper,(User)Component 通过 ReactInstanceMap 获得的 （User）Component#_reactInternalInstance ，即通过 ReactElement#type 为 TopLevelWrapper,(User)Component 的 ReactElement 创建的)
+
+每次解析组件的 render 出来的元素(ReactElement)后，即通过该 ReactElement 创建下一层的 ReactDomComponent,ReactCompositeComponent,并且通过 ReactElement#type 构建下一层的(User)Component 实例，并且调用相应的生命周期方法。
 
 ReactDOMComponent/ReactCompositeComponent 最终需要解析为 ReactDOMComponent 然后解析为 Document#Element 再挂载到 Dom 树上。
 
 通用内部属性：
 
 - _currentElement：当前 (Inner)Component 的 ReactElement实例
-- _compositeType:枚举常量，标记当前的 (User) Component 类型:
+- _rootNodeId
+- _compositeType:枚举常量，标记当前的 (User) Component 类型(取名可以理解为 ReactCompositeComponent 的内置 (User)Component 类型，也可以理解为 ReactCompositeComponent 的具体细分类型)
 
 ```js
 var CompositeTypes = {
@@ -121,6 +138,14 @@ var CompositeTypes = {
   StatelessFunctional: 2,// 函数式组件
 };
 ```
+
+- _instance
+  
+  表示通过 ReactElement#type 构建的 （User）Component 类型的实例，在 ReactCompositeComponent 中的存根。
+
+- _hostParent:当前 (Inner)Component 的父组件,也为 （Inner)Component 类型.通常为 null 值。
+
+- _hostContainerInfo :为 ReactDOMContainerInfo 类型，同时持有 TopLevelWrapper 和 Node 节点类型.(*无论哪一层的 （Inner）Component均持有的是 ReactDom#render 所封装和提供的 TopLevelWrapper 和 Node根节点容器*)
 
 - _renderedNodeType
 
@@ -140,9 +165,6 @@ var ReactNodeTypes = {
   
   当前(Inner)Component 持有的 ReactElement#type 的 (User) Commpont#render 返回的 ReactElement 构建的 （Inner)Component
 
-- _hostParent:当前 (Inner)Component 的父组件,也为 （Inner)Component 类型
-- _hostContainerInfo :为 ReactDOMContainerInfo 类型，同时持有 TopLevelWrapper 和 Node 节点类型.(*无论哪一层的 （Inner）Component均持有的是 ReactDom#render 所封装和提供的 TopLevelWrapper 和 Node根节点容器*)
-
 #### ReactHostComponent/ReactDOMComponent
 
 ReactDOMComponent.prototype 会被 Mixin 两个类：ReactDOMComponent.Mixin，ReactMultiChild.Mixin 用于扩展 ReactDOMComponent 的能力。
@@ -150,18 +172,12 @@ ReactDOMComponent.prototype 会被 Mixin 两个类：ReactDOMComponent.Mixin，R
 element 类型如果是 Host 类型则会被包装成为 ReactDOMComponent
 
 - _tag: 当前Host 组件的 tag 标记类型，如 div,p 等 Dom 元素
-- _hostNode:当前的 ReactDomComponent(如果是渲染的根组件)，所依赖的容器。(组合类型组件不能直接挂载到 DOM 树上，因此没有该属性标记)
+- _hostNode:当前的 ReactDomComponent(如果是渲染的根组件)，所依赖的 Dom#Element 容器。(组合类型组件不能直接挂载到 DOM 树上，因此没有该属性标记)
 - _renderedChildren: 需要渲染的子组件 (Inner)Component
 
+ReactDomComponet 递归渲染的子组件是将子组件返回的 markup(html标签)，添加到当前 Dom 根节点的子元素。
+
 this._createInitialChildren(根据 props.children 递归向 mount 子元素) -> this.mountChildren
-
-#### ReactCompositeComponent
-  
-element 如果为非 Host 类型则为组合类型。
-
-内部属性:
-
-- _instance：当前 (User)Component 的实例
 
 #### ReactDOMTextComponent
 

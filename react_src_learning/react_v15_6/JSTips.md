@@ -16,6 +16,10 @@
 
   Object.prototype.toString:返回诸如: [object Function] 字符串用于区分 Object 的子类型如 Array,Regexp.
 
+- xxx.constructor.name
+  
+  用于得到某个对象的构造函数，取他的名字可以得到该对象是由哪个构造函数创建的（即是什么类型）
+
 - NaN 的特殊性
   
   NaN !== NaN,且为 falsy 值
