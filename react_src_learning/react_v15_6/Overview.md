@@ -61,8 +61,41 @@ ReactDOM.render((
 
 ## 内部API
 
-### ReactUpdates（reconciler 协调器模块，用于利用 core 协调 render 执行渲染操作）
+### ./src/shared/utils
 
+   被所有目录共享的一些工具组件的源码在该处放置
+
+- PooledClass.js
+
+  享元模式 的对象池。由于 JS 万物皆对象。因此该对象池是添加构造函数上的。对象池即为普通数组(数组当栈，使用 pop,push 缓冲和提取对象)，池中存储的对象即为该构造函数创建的对象。
+
+  *使用该对象池的对象必须要具有 destructor 解构方法，用于在释放对象时进行解构操作*
+
+  *向构造函数添加对象池时也可以添加构造方法，该处称之为 Poller方法,用于构造该对象初始化该对象时调用，内置了 1，2，3，4 个参数的*
+
+  被池化的构造函数会被添加 instancePool,poolSize,getPooled,realease 等方法用于存储，获取，释放对象。默认的对象池容量为 10
+
+### ReactElementSymbol.js
+
+   在 ReactElement 这个普通的对象上添加的 $$typeof 属性的常量值。如果 JS 引擎支持 Symbol 则使用 'react.element' 的字符串值作为 Symbol 的 key 作为常量值。如果不支持则使用魔数 0xeac7 作为标记。
+
+### ./src/renderers/shared/stack/reconciler
+
+   协调器相关的源码被组织在该目录下
+
+- ReactUpdates.js
+
+   主要对外暴露的方法,用于协调和调度组件的更新操作。主要被 ReactDom,ReactMount,ReactART 使用。eg:ReactMount#_renderNewRootComponent 的操作，并不是直接被调用者调用执行，而是将该操作需要执行的 ReactMount#batchedMountComponentIntoNode 方法交由调度器进行协调分发和执行。何时执行，怎么执行，按照什么顺序执行均是由ReactUpdates 内部的事件调度器负责控制。
+
+- ReactUpdateQueue.js/ReactNoopUpdateQueue.js
+
+### .src/renderers/shared/utils
+
+   只被协调器和渲染器使用的工具组件的源码被组织在该处。
+
+- Transaction.js
+  
+  装饰(wrapper)一次更新的方法调用,形成一种事务机制，提供 initialize 更新前的回调机制，try catch 包裹待调用的方法，保证 perform 调用的方法是否抛出异常，均可以完成调用，并且调用 close 方法。形成 initialize -> perform -> close 的事务调用机制。
 
 ### ReactElement
 
