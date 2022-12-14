@@ -8,7 +8,12 @@
 
   实际上 +0 === -0 ,但是在实际实践中通常为了区分 +0/-0,通常使用 1/+0 1/-0 的两个值进行笔记确定 +/- 0.
 
-- typeof/Object.prototype.toString/instanceOf 的区别
+  +Infinity: 符号位0 指数位全1 有效位数全零
+  -Infinity: 符合位1 指数位全1 有效位数全零
+
+  NaN:符号位为 0 ,指数部位全 1，有效位数非全 0
+
+- typeof/Object.prototype.toString/instanceOf的区别
   
   typeof: 返回 object(Array,Regexp...),function,number,boolean,string(Date),undefined
 
@@ -29,4 +34,8 @@
   false,0,'',null,undefined,NaN.
 
   所谓的 falsy 即通过 Boolean(值) 得到的对象的值为 false.
+
+- typeof NaN
+  
+  typeof NaN 为 object 类型。
   

@@ -4,6 +4,8 @@
 
 ### react(core 模块，对外暴露的核心 API)
 
+组件复用机制: **如果相同的层级的 ReactElement 组件的 type 和 key 相同则采用复用实例的方式进行更新操作，否则，则执行先卸载原先组件，再挂载新的组件**
+
 ./react/src/isomorphic/React.js
 
 react 的核心 API.eg:React.Component,React.createElement.
@@ -47,17 +49,33 @@ ReactDOM.render((
 
 对外分别暴露向浏览器渲染的 API 和 SSR 直接返回渲染的 Dom 字符串的 API
 
+- ReactDom(client 端渲染器)
+
 ./react/src/renderers/dom/ReactDOM.js 向浏览器的 Container(DOM 节点) 渲染 Component（组件树，视图组件）
+
+- ReactDomServer(SSR Server Side Rendered 渲染器)
 
 ./react/src/renderers/dom/ReactDOMServer.js SSR 使用，直接返回渲染完成 html 文本
 
-如果是向客户端渲染则使用的是:
+- ReactNative (RN 渲染器,面向客户端原生的渲染器)
 
 /home/hunter/WebstormProjects/react/src/renderers/native/ReactNative.js 中的 ReactNative#render 向客户端组件进行渲染。
+
+- ReactTestRenderer (面向功能测试的渲染器)
 
 如果是测试 React 的渲染器是否符合预期，渲染成为 json 则使用:
 
 /home/hunter/WebstormProjects/react/src/renderers/testing/ReactTestRenderer.js 的 ReactTestRenderer#create 进行渲染成为 JSON 数据结构。
+
+### reconciler
+
+为内部 API 没有对外暴露方法调用。
+
+相关源码位于 ./src/renderers/shared/stack/reconciler 目录下。
+
+### react-art
+
+react 提供的声明式的 svg,canvans 绘图工具库。*在 instantiateReactComponent.js 构建内置 Component 组件时进行了特殊处理*
 
 ## 内部API
 
@@ -312,7 +330,7 @@ react 核心的 API 和 协调器只负责组件状态的管理和更新调度�
 
 - PureComponet
   
-  单纯组件，只对 Props 和 State 进行浅层比较.(即 Props,State 对象不相等时执行渲染，不会比较对象内部的值)
+  单纯组件，只对 Props 和 State 进行浅层比较.(即 Props,State 对象不相等时执行渲染，不会比较对象内部的值)***对象浅比较的判断逻辑位于:./node_modules/fbjs/lib/shallowEqual.js 中***
 
   因此在渲染性能上有很大的提升，要求用户自己需要直到 Props,State 内部的深层次不同，进行手动调用 forceUpdate 进行渲染。
 
