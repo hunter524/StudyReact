@@ -1,209 +1,17 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React                        from 'react';
+import ReactDOM                            from 'react-dom';
 import './index.css';
 import './otherComponent.js'
 import './flowTest'
-import PropTypes from "prop-types"
-import {ExternalCompositeComponent} from "./otherComponent";
-import VideoPlay from "./video_play/VideoPlay";
-import XGPlayer from "./video_play/XGPlayer";
-import SimpleContextComponent from "./react_again/SimpleContextComponent";
+import PropTypes                           from "prop-types"
+import {ExternalCompositeComponent}        from "./otherComponent";
+import VideoPlay                           from "./video_play/VideoPlay";
+import XGPlayer                            from "./video_play/XGPlayer";
+import SimpleContextComponent              from "./react_again/SimpleContextComponent";
+import ErrorBoundaryComponent              from './react_feature/error_boundary/ErrorBoundaryComponent';
+import {HighComponent,HighComponentSecond} from './react_feature/hoc/HOCComponent'
+import Game                                from './react_feature/game/Game';
 
-
-//普通类型定义的组件
-// class Square extends React.Component {
-//     render() {
-//         return (
-//             // onClick={()=>{alert(`click ${this.props.value}!`)}} 点击完成之后才做出响应
-//             // onClick={alert('immediately alert!')} 不用点击每次都会做出响应
-//             // onClick={()=>{this.setState({value:'X'})}}
-//
-//             //  onClick调用内部的属性的click方法
-//             <button className="square" onClick={() => this.props.onClick()}>
-//                 {/*{this.state.value === null?this.props.value:this.state.value }*/
-//                     //TODO://无法在jsx的括号中写复杂的表达式?
-//                     this.showbuttonContent()
-//                 }
-//             </button>
-//         );
-//     }
-//
-//
-//     showbuttonContent() {
-//         // if (this.state.value) {
-//         //     return this.state.value;
-//         // }
-//         // else {
-//         return this.props.value;
-//         // }
-//     }
-//
-//
-//     //react 的是否该更新界面的回调
-//     shouldComponentUpdate() {
-//         // console.log(this.props.value,typeof this.props.value);
-//         // if (this.props.value&& this.props.value === 'X'){
-//         //     alert(`Square should update! ${this.props.value}`);
-//         // }
-//         return true;
-//     }
-// }
-
-//通过函数的方式定义一个组件
-function Square(props) {
-    return (
-        <button className="square" onClick={() => props.onClick()}>
-            {/*{this.state.value === null?this.props.value:this.state.value }*/
-                //TODO://无法在jsx的括号中写复杂的表达式?
-                props.value
-            }
-        </button>
-    )
-}
-
-//判断胜利者
-function caculatorWinner(squares) {
-    const lines = [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6]
-    ];
-    for (let i = 0; i < lines.length; i++) {
-        let [a, b, c] = lines[i];
-        if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-            return squares[a];
-        }
-    }
-    return null;
-}
-
-class Board extends React.Component {
-    renderSquare(i) {
-        // 传入Square一个onClick属性,onClick属性是指向一个函数
-        return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)}/>;
-    }
-
-
-    render() {
-        return (
-            <div>
-                <div className="status"></div>
-                <div className="board-row">
-                    {this.renderSquare(0)}
-                    {this.renderSquare(1)}
-                    {this.renderSquare(2)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(3)}
-                    {this.renderSquare(4)}
-                    {this.renderSquare(5)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(6)}
-                    {this.renderSquare(7)}
-                    {this.renderSquare(8)}
-                </div>
-            </div>
-        );
-    }
-}
-
-class Game extends React.Component {
-
-
-    constructor() {
-        super();
-        this.state = {
-            history   : [
-                {
-                    squares: Array(9).fill(null),
-                }
-            ],
-            stepNumber: 0,
-            xIsNext   : true
-        }
-    }
-
-    handleClick(i) {
-        var history   = this.state.history.slice(0, this.state.stepNumber + 1);
-        var current   = history[history.length - 1];
-        const squares = current.squares.slice();
-        if (caculatorWinner(squares) || squares[i]) {
-            return;
-        }
-        squares[i]     = this.state.XisNext ? "X" : "O";
-        var xisNext    = !this.state.XisNext;
-        var stepNumber = ++this.state.stepNumber;
-        this.setState({
-            history   : history.concat([{squares: squares}]),
-            XisNext   : xisNext,
-            stepNumber: stepNumber
-        });
-    }
-
-    jumpTo(stepNumber) {
-        this.setState({
-            stepNumber: stepNumber,
-            xisNext   : (!(stepNumber % 2)),
-        })
-    }
-
-
-    render() {
-        var history = this.state.history;
-        var current = history[this.state.stepNumber];
-        var squares = current.squares;
-        let status;
-        let winner  = caculatorWinner(squares);
-        if (winner) {
-            status = `Winner is ${winner}`
-        } else {
-            status = `Next player: ${this.state.XisNext ? "X" : "O"}`;
-        }
-
-        //需要使用key避免react报出error
-        const moves = history.map((step, move) => {
-            const desc = move ? 'Move #' + move : 'Game start';
-            return (
-                <li key={move}>
-                    <a href='#' onClick={() => {
-                        this.jumpTo(move)
-                    }}>{desc}</a>
-                </li>
-            )
-        });
-
-        function logMoves(moves) {
-            console.log(moves);
-            return moves;
-        }
-
-        return (
-            <div className="game">
-                <div className="game-board">
-                    <Board squares={squares} onClick={(i) => this.handleClick(i)
-                    }/>
-                </div>
-                <div className="game-info">
-                    <div>{status}</div>
-                    <ol>{logMoves(moves)}</ol>
-                </div>
-            </div>
-        );
-    }
-}
-
-// ====================#字棋====================
-
-// ReactDOM.render(
-//     <Game/>,
-//     document.getElementById('root')
-// );
 
 //====================other demo====================
 //返回的是 ReactElement 类型
@@ -814,28 +622,6 @@ class UnControlledComponent extends React.Component {
 
 }
 
-//React With ES6
-class DefaultProps extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return (
-            <div>
-                <a>Default Props with ES6 Class</a>
-                <a>Props name is:{this.props.name}</a>
-            </div>
-        );
-    }
-
-}
-
-//ES6 给组件定义默认属性
-DefaultProps.defaultProps = {
-    name: "ES6 Default Name!"
-};
-
 
 //
 class UpdateComponent extends React.Component {
@@ -1103,92 +889,6 @@ function FragmentComponet(props) {
 
 //ReactDom 中的portal组件 用于控制与组合组件
 
-//React Component 的 Error Boundaries
-class ErrorBoundaryComponent extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {hasError: false}
-    }
-
-    shouldComponentUpdate(nextProps, nextStates) {
-        if (nextStates.hasError) {
-            throw new TypeError("error boundary!");
-        }
-    }
-
-    render() {
-        if (this.state.hasError) {
-            return <a>Some Thing Wrong!</a>
-        } else {
-            return <button onClick={() => {
-                this.setState({hasError: true})
-            }}>throw error!</button>
-        }
-    }
-
-
-}
-
-//ErrorBoundary只能捕获其子元素的错误 并不能捕获当前Component产生的错误
-//且子元素的Error 只向上传递到理其最近的一个Component 的 componentDidCatch方法
-//再向上的component 则无法接收到异常
-class CatchComponent extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return (<ErrorBoundaryComponent/>);
-
-    }
-
-    componentDidCatch(error, info) {
-        alert(error);
-        alert(info.componentStack);
-    }
-}
-
-//High Order Component （类似于函数式编程中的高阶函数）
-//函数式编程中：传入低阶函数 被 高阶函数调用
-//React中传入低阶Component被高阶Component进行包装调用
-//可以通过修改DisplayName 修改在Chrome React Debug工具中显示的组件名称
-//如果不修改DisplayName则默认显示的 返回的class的名称 （即使包装的低阶的组件不同，Chrome中显示的高阶的组件的名称还是相同的）
-//copy 低阶组件的静态方法 进入高阶组件中是很有必要的，但是需要明确的知道组件的名称 copy所有组件的静态方法可以使用 “hoist-non-react-statics”module进行
-//todo://High Order Component 组件是否便可以解决面向切面编程的问题？
-function wrapLowComponent(LowComponent, name) {
-    class HOCComponent extends React.Component {
-        constructor(props) {
-            super(props)
-        }
-
-        render() {
-            return <LowComponent name={name}/>
-        }
-
-    }
-
-    // HOCComponent.displayName = `HOCWrapped${LowComponent.displayName||LowComponent.name||'Component'}`;
-    return HOCComponent;
-}
-
-function LowComponent(props) {
-    return (
-        <button onClick={function () {
-            LowComponent.staticMethod("button");
-        }}>I am Low Component!Name is {props.name}</button>
-    );
-}
-
-//定义在类上的方法 而不是定义在类的内部的方法
-//定义在类的{}内部的方法为对象的方法
-//定义在类的引用上的方法 为类的方法
-LowComponent.staticMethod = function (message) {
-    alert("hello:" + message);
-};
-
-const HighComponent       = wrapLowComponent(LowComponent, "low low low！");
-const HighComponentSecond = wrapLowComponent(LowComponent, "low second ,low second ,low second!");
-
 //Forwarding refs(向Component中的Component组件索取引用）
 //HOC 的Component ref默认不向下传递 需要通过React.forwardRef 将ref作为props的一个参数向下传递
 const ForwardRefButton = React.forwardRef((props, ref) => {
@@ -1394,7 +1094,23 @@ class FormComponent extends React.Component {
 
 }
 
-//组件的使用 需要放在组件声明的下面
-ReactDOM.render(<CatchComponent/>, document.getElementById('root'));
+// 错误边界捕获机制
+// ReactDOM.render(<ErrorBoundaryComponent />, document.getElementById("root"));
+
+// HOC 高阶组件特性
+// ReactDOM.render(
+//   <div>
+//     <HighComponent />
+//     <HighComponentSecond />
+//   </div>,
+//   document.getElementById("root")
+// );
+
+// ====================#字棋====================
+ReactDOM.render(
+    <Game/>,
+    document.getElementById("root")
+);
+
 
 

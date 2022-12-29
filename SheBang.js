@@ -11,3 +11,6 @@ console.log(process.env);
 
 // node 的
 console.log(__dirname, __filename);
+
+// TODO:// process.env.NODE_ENV 环境变量 为 production,development 的原理。
+console.log(process.env.NOE_ENV);

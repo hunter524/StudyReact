@@ -5,7 +5,7 @@
 node 可执行命令（ELF文件），为所有 node 工具的基础执行环境。源码由 C/C++ 语言编写，直接打包成为 ELF 二进制可执行文件安装在本地供直接运行。
 其提供 chrome-v8 等 js 文件执行所需要的核心引擎。
 
-Ubuntu发行版本可以通过 APT 命令搜索 nodejs 程序进行安装。
+Ubuntu发行版本可以通过 APT 命令搜索 nodejs 程序进行安装。通过包管理器安装 nodejs 需要提前配置软件源参见： <https://nodejs.org/en/download/package-manager/>
 
 也可以可使用 [nvm](https://github.com/nvm-sh/nvm) node 的多版本管理工具进行 node 的版本管理。
 
