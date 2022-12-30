@@ -11,6 +11,10 @@ import SimpleContextComponent              from "./react_again/SimpleContextComp
 import ErrorBoundaryComponent              from './react_feature/error_boundary/ErrorBoundaryComponent';
 import {HighComponent,HighComponentSecond} from './react_feature/hoc/HOCComponent'
 import Game                                from './react_feature/game/Game';
+import TypeCheckComponent                  from './react_feature/prop_types/TypeCheckComponent';
+import ComponentLifeCycle                  from './react_feature/lifecycle/ComponentLifeCycle';
+import ParentLifeCycleComponent
+                                           from './react_feature/lifecycle/ParentLifeCycleComponent';
 
 
 //====================other demo====================
@@ -549,21 +553,6 @@ function RepeateChildrenIsFunction(props) {
     }}</Repeate>
 }
 
-//Typechecking with PropTypes (dev 模式下如果参数类型不匹配会报错）
-function TypeCheckComponent(props) {
-    return <div>
-        TypeCheckingComponent!
-        <a>{props.name}</a>
-    </div>
-}
-
-TypeCheckComponent.propTypes    = {
-    name: PropTypes.string
-};
-//prop-types 使用默认的值
-TypeCheckComponent.defaultProps = {
-    name: "default Name!"
-};
 
 //Refs And Dom 按照最后的的用例 ref 还可以通过props进行跨组件传递
 //todo:最后的提示 ref call back inline function
@@ -650,105 +639,6 @@ class UpdateComponent extends React.Component {
     }
 
 
-}
-
-class ComponentLifeCycle extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    componentWillMount() {
-        console.log(`ComponentLifeCycle componentWillMount ${this.props.name}`)
-    }
-
-    componentDidMount() {
-        console.log(`ComponentLifeCycle componentDidMount ${this.props.name}`)
-    }
-
-    //如果Component的Type相同只是属性不同 则先调用该方法，然后调用ComponentWillUpdate方法
-
-    componentWillUnmount() {
-        console.log(`ComponentLifeCycle componentWillUnmount ${this.props.name}`)
-
-    }
-
-    componentWillReceiveProps() {
-        console.log(`ComponentLifeCycle componentWillReceiveProps ${this.props.name}`)
-    }
-
-    componentWillUpdate() {
-        console.log(`ComponentLifeCycle componentWillUpdate ${this.props.name}`)
-    }
-
-
-    render() {
-        return (<div>
-            <a>
-                I am a ComponentLifeCycle named {this.props.name}
-            </a>
-        </div>);
-    }
-}
-
-class ComponentLifeCycleSecond extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    componentWillMount() {
-        console.log(`ComponentLifeCycleSecond componentWillMount ${this.props.name}`)
-    }
-
-    componentDidMount() {
-        console.log(`ComponentLifeCycleSecond componentDidMount ${this.props.name}`)
-    }
-
-    componentWillUnmount() {
-        console.log(`ComponentLifeCycleSecond componentWillUnmount ${this.props.name}`)
-
-    }
-
-    render() {
-        return (<div>
-            <a>
-                I am a ComponentLifeCycleSecond named {this.props.name}
-            </a>
-        </div>);
-    }
-}
-
-//according to Advanced Guide Reconciliation
-// Component的更新首先判断 root 元素的 type是否相同，如果相同则更新Component属性，
-// 如果不相同则替换该root 下面的所有子元素（移除原先的Component 添加新的Component）
-class ParentLifeCycleComponent extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {times: 0}
-    }
-
-    componentDidMount() {
-        this.timerId = setInterval(() => {
-            this.setState((preState) => {
-                return {times: preState.times + 1}
-            })
-        }, 1000)
-    }
-
-    componentWillUnmount() {
-        clearInterval(this.timerId);
-    }
-
-    render() {
-        if (this.state.times % 3 === 0) {
-            return <ComponentLifeCycle name="3% = 0"/>
-        } else if (this.state.times % 3 === 1) {
-            return <ComponentLifeCycle name="3% = 1"/>
-        } else if (this.state.times % 3 === 2) {
-            return <ComponentLifeCycleSecond name="3% = 2"/>
-        } else {
-            return null;
-        }
-    }
 }
 
 
@@ -1107,10 +997,24 @@ class FormComponent extends React.Component {
 // );
 
 // ====================#字棋====================
+// ReactDOM.render(
+//     <Game/>,
+//     document.getElementById("root")
+// );
+
+// propTypes
 ReactDOM.render(
-    <Game/>,
+  <TypeCheckComponent name={111} />,
+  document.getElementById("root")
+);
+
+// 生命周期待整理
+ReactDOM.render(
+    <ParentLifeCycleComponent/>,
     document.getElementById("root")
 );
+
+
 
 
 
