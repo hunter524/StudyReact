@@ -16,6 +16,6 @@ console.log("getNumber is:", getNumber());
 console.log(`__dirname is:${__dirname}`);
 console.log(`__filename is:${__filename}`);
 // current work directory 为当前项目的 package.json 文件所在的目录
-console.log(`cwd is: ${process.cwd()}`);
+// console.log(`cwd is: ${process.cwd()}`);
 
-export default getNumber
+export default getNumber;

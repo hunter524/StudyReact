@@ -1,11 +1,11 @@
 {
   "name": "my-app",
   "version": "0.1.0",
-  "type": "commonjs",
   "private": true,
   "dependencies": {
     "antd-mobile": "^2.2.14",
     "axios": "^0.21.0",
+    "babel-preset-es2015": "^6.24.1",
     "create-react-class": "15.6.3",
     "download": "^8.0.0",
     "express": "^4.17.1",
@@ -26,7 +26,8 @@
     "ramda": "^0.27.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-scripts": "1.1.1",
+    "react-scripts": "5.0.1",
+    "sass": "^1.57.1",
     "xgplayer": "^2.20.3",
     "xmlhttprequest": "^1.8.0"
   },
@@ -47,5 +48,17 @@
   "devDependencies": {
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "flow-bin": "^0.195.2"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
