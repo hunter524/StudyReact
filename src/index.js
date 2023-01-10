@@ -1033,6 +1033,9 @@ ReactDOM.render(
 );
 
 // 验证 flow.js 语法可以在 create-react-app 中直接使用无需配置
+// 因为在 create-react-app 项目中,内部配置依赖了 babel-preset-react-app-> plugin-transform-flow-strip-types
+// 用于解析 flow 代码
+
 // 需要在 .babelrc 中配置 {"plugins": ["transform-flow-strip-types"]}
 // 在 package.json 文件中配置 dev 依赖 flow-bin,babel-plugin-transform-flow-strip-types 或者 参见官方最新的配置文档
 
