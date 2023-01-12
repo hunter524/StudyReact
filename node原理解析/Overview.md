@@ -33,13 +33,24 @@ npm install -D: 添加 dev 依赖
 npm install -g: 全局安装依赖
 npm install: 添加普通的生产依赖
 
-## package.json
+## npx 
 
-npm,yarn 等包管理工具解析依赖包，运行指定命令的配置文件
+npx(Node Package Execute),npm v5.2.0 新引入的即时运行安装包的命令,同时也便于了调用项目内部安装的依赖模块.
+
+[ruanyifeng npx 使用](https://www.ruanyifeng.com/blog/2019/02/npx.html)
 
 ## yarn
 
 替代 npm 的另外一种包管理工具，也是由 js 编写的程序工具。
+
+## pnpm
+
+pnpm(Promoted Node Package Manage) <https://pnpm.io/>,优化了包 node_modules 的依赖安装速度.减小了磁盘占用(采用全局共享 node_modules)
+
+
+## package.json
+
+npm,yarn 等包管理工具解析依赖包，运行指定命令的配置文件
 
 ## webpack
 
@@ -52,3 +63,22 @@ __dirname: 代表运行当前 node 程序的工作目录。
 __filename: 代表运行当前 node 程序的 js 文件。
 
 process.env:环境变量下的 npm_xxxx 变量，表示 package.json 的一些配置参数。
+
+## node_modules
+
+node 依赖所存放的目录
+
+/node_modules
+/home/node_modules
+/home/usrs/node_modules
+/project_dir/node_modules
+
+node 运行时的依赖包查找顺序,从上到下查找所依赖的包.
+
+全局安装的依赖在 node 安装目录下的 ./lib/node_modules/ 目录下.
+
+如:使用 nvm 安装的 node.
+
+其 node 的安装目录为: /home/hunter/.nvm/versions/node/v14.20.0/
+
+使用该 node 的 npm/yarn 安装的全局依赖则处于 : /home/hunter/.nvm/versions/node/v14.20.0/lib/node_modules
