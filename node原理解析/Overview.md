@@ -43,6 +43,12 @@ npx(Node Package Execute),npm v5.2.0 新引入的即时运行安装包的命令,
 
 替代 npm 的另外一种包管理工具，也是由 js 编写的程序工具。
 
+常用命令:
+
+yarn list:列出当前项目的依赖和级联依赖
+yarn add:添加依赖
+yarn remove：移除依赖
+
 ## pnpm
 
 pnpm(Promoted Node Package Manage) <https://pnpm.io/>,优化了包 node_modules 的依赖安装速度.减小了磁盘占用(采用全局共享 node_modules)
