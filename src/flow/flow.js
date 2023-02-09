@@ -15,7 +15,8 @@
 // flow的配置文件为 .flowconfig
 
 //  flow.js 语法可以在 create-react-app 中直接使用无需配置
-// 因为在 create-react-app 项目中,内部配置依赖了 babel-preset-react-app-> plugin-transform-flow-strip-types
+// 因为在 create-react-app 项目中,内部配置依赖了 babel-preset-react-app->
+// @babel/plugin-transform-flow-strip-types(babel 自己实现的 flow 代码剥离组件
 // 用于解析 flow 代码
 
 // 如果没有使用 create-react-app 也没有使用 babel
@@ -55,6 +56,52 @@ function getNumber(): number {
   // return "2";
 }
 
+function foo(x: ?number): string {
+  if (x) {
+    return x.toString();
+  }
+  return "default string";
+}
+
+// maybe type（Maybe 可以使用 null or undefined）
+function Maybe(value: ?string) {
+  console.log("Maybe:", value);
+}
+
+Maybe(null);
+Maybe(undefined);
+Maybe();
+
+// Optional type(Optional 不能使用 null)
+function Optional(value?: string) {
+  console.log("Optional:", value);
+}
+
+// Optional(null);
+Optional(undefined);
+Optional();
+
+// default parameters(default parameters 不能使用 null 只能是 undefined)
+
+function defaultParameters(p: string = "default") {
+  console.log("defaultParameters:", p);
+}
+
+// defaultParameters(null);
+defaultParameters(undefined);
+defaultParameters();
+
+// 如果只是 1 则为 number literal 类型
+// 如果使用多个 literal 则是 literal 的 union 类型
+function literalTypes(value: 1 | 2 | 3) {
+  console.log("literalTypes:", value);
+}
+
+literalTypes(1);
+literalTypes(2);
+literalTypes(3);
+// literalTypes(4)
+
 console.log("getNumber is:", getNumber());
 console.log(`__dirname is:${__dirname}`);
 console.log(`__filename is:${__filename}`);
@@ -63,4 +110,4 @@ console.log(`__filename is:${__filename}`);
 
 // flow 报错,因为调用该方法预期是不需要参数
 // getNumber("2");
-export default getNumber;
+// export default getNumber;
